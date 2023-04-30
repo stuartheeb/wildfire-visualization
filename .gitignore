@@ -1,2 +1,9 @@
 *DS_store
 data/*
+__pycache__
+.vscode/
+dataset/mountain_backcurve40_image
+dataset/mountain_backcurve40
+dataset/Wildfire_simplified
+dataset/*.vti
+dataset/*.vts
