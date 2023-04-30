@@ -20,3 +20,10 @@ Project for the course Scientific Visualization at ETH in spring 2023.
 - [ ] Analyzing factors contribute to VLS behavior.
 - [ ] Final presentation slides.
 - [ ] Final report.
+
+
+## Log
+### 4.30 General Code Pipeline
+<p align="center">
+    <img src="./media/0430.png" alt="traj" style="width:800px;" />
+</p>
