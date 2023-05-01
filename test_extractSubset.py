@@ -100,7 +100,7 @@ def main():
     resampler = vtk.vtkResampleToImage()
     resampler.AddInputDataObject(grid_dataset)
     resampler.SetSamplingDimensions(resampledPointsDims)  ### set for #points
-    resampler_sub10.SetSamplingBounds(bounds)
+    resampler.SetSamplingBounds(bounds)
     resampler.Update()
     ImageData = resampler.GetOutput()
     
