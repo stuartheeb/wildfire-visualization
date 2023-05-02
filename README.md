@@ -1,6 +1,10 @@
 # wildfire-simulation
 Project for the course Scientific Visualization at ETH in spring 2023.
 
+## Disclaimer
+
+If you are having trouble with dependencies, try using the provided `conda.yml` file.
+
 ## TODO List
 - [X] Load an `.vts` file.
 - [X] Resample curvilinear data to image data (for fire and watervapor) as done in Paraview.
