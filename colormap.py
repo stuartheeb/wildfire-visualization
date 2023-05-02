@@ -72,7 +72,6 @@ grassVolumeProperty.SetScalarOpacity(grassOpacity)
 grassVolumeProperty.SetInterpolationTypeToLinear()
 
 
-### =================  soil  =================
 f = open(soil_path)
 SV_soil = json.load(f)
 f.close()
@@ -93,3 +92,18 @@ for i in range(numColors):
     r, g, b, a = getColorCorrespondingToValue(val) ### a 1d interpolate mapper
     soilLookupTable.SetTableValue(i, r, g, b, a) 
 soilLookupTable.Build()
+
+### =================  streamline  =================
+stream_RGBA = np.array([[0.231373, 0.298039, 0.752941, 1], 
+                        [0.865003, 0.865003, 0.865003, 1],
+                        [1, 0, 0, 1]])
+x = np.linspace(0, 1, len(stream_RGBA))
+getColorCorrespondingToValue = interp1d(x, stream_RGBA.T)
+streamLookupTable = vtk.vtkLookupTable()
+streamLookupTable.SetScaleToLinear()
+streamLookupTable.SetNumberOfTableValues(numColors)
+for i in range(numColors):
+    val = i / (numColors - 1)
+    r, g, b, a = getColorCorrespondingToValue(val)
+    streamLookupTable.SetTableValue(i, r, g, b, a)
+streamLookupTable.Build()
