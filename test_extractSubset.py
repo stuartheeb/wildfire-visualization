@@ -37,7 +37,13 @@ class MyInteractorStyle(vtkInteractorStyleTrackballCamera):
 def main():
     print("[WildFireB]")
     ### =================  IO  =================
-    grid_file_name = "dataset\\mountain_backcurve40\\output.40000.vts"
+    operating_system = os.name
+    if(operating_system == "posix"): # MacOS
+        grid_file_name = "dataset/mountain_backcurve40/output.40000.vts"
+    elif(operating_system == "nt"): # Windows
+        grid_file_name = "dataset\\mountain_backcurve40\\output.40000.vts"
+    else:
+        grid_file_name = "dataset\\mountain_backcurve40\\output.40000.vts" # original path
     grid_datasetReader = vtk.vtkXMLStructuredGridReader()
     grid_datasetReader.SetFileName(grid_file_name)
     grid_datasetReader.Update()
