@@ -11,10 +11,10 @@ Project for the course Scientific Visualization at ETH in spring 2023.
 - [X] Set camera intrinsics and extrinsics.
 - [X] Build vtk code pipeline.
 - [ ] Tune colormaps.
-- [ ] Compositie wind velocity field.
+- [X] Compositie wind velocity field.
 - [ ] Compute wind gradient field and vorticity.
+- [X] Visualize velocity streamline. 
 - [ ] Visualize vorticity. 
-- [ ] Visualize velocity streamline. 
 - [ ] Generate animations on 6 datasets.
 - [ ] Convert `theta` from cell to point values.
 - [ ] Analyzing factors contribute to VLS behavior.
@@ -26,4 +26,9 @@ Project for the course Scientific Visualization at ETH in spring 2023.
 ### 4.30 General Code Pipeline
 <p align="center">
     <img src="./media/0430.png" alt="traj" style="width:800px;" />
+</p>
+
+### 5.2 Composite Velocity Field + Visualize Streamlines
+<p align="center">
+    <img src="./media/0502.png" alt="traj" style="width:800px;" />
 </p>
