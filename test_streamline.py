@@ -15,6 +15,7 @@ import vtk
 import numpy as np
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
 import colormap
+from utils import vtkScalarArray2vtkImageData
 
 Attribute2IndexDict = {"O2": 0,
                         "convht_1": 1,
@@ -32,26 +33,6 @@ Attribute2IndexDict = {"O2": 0,
 class MyInteractorStyle(vtkInteractorStyleTrackballCamera):
     def __init__(self, parent=None):
         pass
-
-def vtkScalarArray2vtkImageData(vtkArray, origin, dimension, spacing):
-    """
-    _summary_
-
-    Args:
-        vtkArray (_type_): _description_
-        origin (_type_): _description_
-        dimension (_type_): point dimes
-        spacing (_type_): cell spacing
-
-    Returns:
-        _type_: _description_
-    """
-    image = vtk.vtkImageData()
-    image.SetOrigin(origin)
-    image.SetDimensions(dimension)
-    image.SetSpacing(spacing)
-    image.GetPointData().SetScalars(vtkArray)
-    return image
 
 def main():
     print("[WildFireB]")

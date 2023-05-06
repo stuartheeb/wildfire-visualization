@@ -107,3 +107,10 @@ for i in range(numColors):
     r, g, b, a = getColorCorrespondingToValue(val)
     streamLookupTable.SetTableValue(i, r, g, b, a)
 streamLookupTable.Build()
+
+
+volumePropertiess = {
+    'grass': grassVolumeProperty,
+    'theta': thetaVolumeProperty,
+    'vapor': vaporVolumeProperty
+}
