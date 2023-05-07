@@ -7,6 +7,7 @@ fire_path = "dataset/SV_fire.json"
 vapor_path = "dataset/SV_vapor.json"
 grass_path = "dataset/SV_grass.json"
 soil_path = "dataset/SV_soil.json"
+vorticity_path = "dataset/SV_vorticity.json"
 
 
 ### =================  theta  =================
@@ -108,9 +109,21 @@ for i in range(numColors):
     streamLookupTable.SetTableValue(i, r, g, b, a)
 streamLookupTable.Build()
 
+### =================  vorticity  =================
+f = open(vorticity_path)
+SV_vorticity = json.load(f)
+f.close()
+vorticityColormap = vtk.vtkColorTransferFunction()
+vorticityColormap.SetColorSpaceToDiverging()
+for i in range(len(SV_vorticity[0]["RGBPoints"]) // 4):
+    xrgb = SV_vorticity[0]["RGBPoints"][i*4:(i+1)*4]
+    vorticityColormap.AddRGBPoint(xrgb[0], xrgb[1], xrgb[2], xrgb[3])
+vorticityOpacity = vtk.vtkPiecewiseFunction()
+vorticityOpacity.AddPoint(0.0, 0)
+vorticityOpacity.AddPoint(0.395686, 0)
+vorticityOpacity.AddPoint(3.18132, 0.8125)
 
-volumePropertiess = {
-    'grass': grassVolumeProperty,
-    'theta': thetaVolumeProperty,
-    'vapor': vaporVolumeProperty
-}
+vorticityVolumeProperty = vtk.vtkVolumeProperty()
+vorticityVolumeProperty.SetColor(vorticityColormap)
+vorticityVolumeProperty.SetScalarOpacity(vorticityOpacity)
+vorticityVolumeProperty.SetInterpolationTypeToLinear()
