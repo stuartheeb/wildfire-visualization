@@ -16,11 +16,15 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 - [X] Build vtk code pipeline.
 - [ ] Tune colormaps.
 - [X] Compositie wind velocity field.
-- [ ] Compute wind gradient field and vorticity.
+- [X] Compute wind gradient field and vorticity.
 - [X] Visualize velocity streamline. 
-- [ ] Visualize vorticity. 
+- [X] Visualize vorticity. 
 - [ ] Generate animations on 6 datasets.
 - [ ] Convert `theta` from cell to point values.
+- [X] GUI code pipeline.
+- [ ] GUI using `.vts` files.
+- [ ] GUI refinements.
+- [ ] Data preprocessing (TBD).
 - [ ] Analyzing factors contribute to VLS behavior.
 - [ ] Final presentation slides.
 - [ ] Final report.
@@ -35,4 +39,9 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 ### 5.2 Composite Velocity Field + Visualize Streamlines
 <p align="center">
     <img src="./media/0502.png" alt="traj" style="width:800px;" />
+</p>
+
+### 5.7 Visualized Vorticity
+<p align="center">
+    <img src="./media/0507.png" alt="traj" style="width:800px;" />
 </p>
