@@ -16,9 +16,10 @@ def createImage(image: vtk.vtkImageData, color1: list, color2: list):
             for c in range(3):
                 image.SetScalarComponentFromDouble(x, y, 0, c, color[c])
 
-def vtkScalarArray2vtkImageData(vtkArray, origin, dimension, spacing):
+def vtkArray2vtkImageData(vtkArray, origin, dimension, spacing, isScalar=True, isPoint=True):
     """
-    _summary_
+    Converting extracted vtkArray into vtkImageData.
+    Can be either scalar points or vector points.
 
     Args:
         vtkArray (_type_): _description_
@@ -33,5 +34,11 @@ def vtkScalarArray2vtkImageData(vtkArray, origin, dimension, spacing):
     image.SetOrigin(origin)
     image.SetDimensions(dimension)
     image.SetSpacing(spacing)
-    image.GetPointData().SetScalars(vtkArray)
+    if isPoint is True:
+        if isScalar is True:
+            image.GetPointData().SetScalars(vtkArray)
+        else:
+            image.GetPointData().SetVectors(vtkArray)
+    else:
+        raise ValueError(">>> Cannot use for cell data. Please manually convert it to vtkImageData.")
     return image
