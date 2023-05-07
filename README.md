@@ -33,15 +33,20 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 ## Log
 ### 4.30 General Code Pipeline
 <p align="center">
-    <img src="./media/0430.png" alt="traj" style="width:800px;" />
+    <img src="./media/0430.png" alt="" style="width:800px;" />
 </p>
 
 ### 5.2 Composite Velocity Field + Visualize Streamlines
 <p align="center">
-    <img src="./media/0502.png" alt="traj" style="width:800px;" />
+    <img src="./media/0502.png" alt="" style="width:800px;" />
+</p>
+
+### 5.6 GUI Code Pipeline
+<p align="center">
+    <img src="./media/0506_streamline.png" alt="" style="width:800px;" />
 </p>
 
 ### 5.7 Visualized Vorticity
 <p align="center">
-    <img src="./media/0507.png" alt="traj" style="width:800px;" />
+    <img src="./media/0507.png" alt="" style="width:800px;" />
 </p>
