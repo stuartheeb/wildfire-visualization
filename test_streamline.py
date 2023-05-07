@@ -15,7 +15,6 @@ import vtk
 import numpy as np
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
 import colormap
-from utils import vtkScalarArray2vtkImageData
 
 Attribute2IndexDict = {"O2": 0,
                         "convht_1": 1,
@@ -34,16 +33,37 @@ class MyInteractorStyle(vtkInteractorStyleTrackballCamera):
     def __init__(self, parent=None):
         pass
 
+def vtkArray2vtkImageData(vtkArray, origin, dimension, spacing, isScalar=True, isPoint=True):
+    """
+    Converting extracted vtkArray into vtkImageData.
+    Can be either scalar points or vector points.
+
+    Args:
+        vtkArray (_type_): _description_
+        origin (_type_): _description_
+        dimension (_type_): point dimes
+        spacing (_type_): cell spacing
+
+    Returns:
+        _type_: _description_
+    """
+    image = vtk.vtkImageData()
+    image.SetOrigin(origin)
+    image.SetDimensions(dimension)
+    image.SetSpacing(spacing)
+    if isPoint is True:
+        if isScalar is True:
+            image.GetPointData().SetScalars(vtkArray)
+        else:
+            image.GetPointData().SetVectors(vtkArray)
+    else:
+        raise ValueError(">>> Cannot used for cell data. Please manually convert it to vtkImageData.")
+    return image
+
 def main():
     print("[WildFireB]")
     ### =================  IO  =================
-    operating_system = os.name
-    if(operating_system == "posix"): # MacOS
-        grid_file_name = "dataset/mountain_backcurve40/output.40000.vts"
-    elif(operating_system == "nt"): # Windows
-        grid_file_name = "dataset\\mountain_backcurve40\\output.40000.vts"
-    else:
-        grid_file_name = "dataset\\mountain_backcurve40\\output.40000.vts" # original path
+    grid_file_name = "dataset\\mountain_backcurve40\\output.40000.vts"
     grid_datasetReader = vtk.vtkXMLStructuredGridReader()
     grid_datasetReader.SetFileName(grid_file_name)
     grid_datasetReader.Update()
@@ -82,7 +102,7 @@ def main():
     ImageData_sub10 = resampler_sub10.GetOutput()
 
     grassVtkArray = ImageData_sub10.GetPointData().GetArray("rhof_1")
-    grassImage = vtkScalarArray2vtkImageData(grassVtkArray, resampledOrigin, grassPointsDims, grassCellSpacing)
+    grassImage = vtkArray2vtkImageData(grassVtkArray, resampledOrigin, grassPointsDims, grassCellSpacing)
     print("grassImage:", grassImage.GetScalarRange())
 
     ### extract soil  
@@ -108,7 +128,7 @@ def main():
     ImageData = resampler.GetOutput()
     
     thetaVtkArray = ImageData.GetPointData().GetArray("theta")
-    thetaImage = vtkScalarArray2vtkImageData(thetaVtkArray, resampledOrigin, resampledPointsDims, resampledCellSpacing)
+    thetaImage = vtkArray2vtkImageData(thetaVtkArray, resampledOrigin, resampledPointsDims, resampledCellSpacing)
     print("thetaImage:", thetaImage.GetScalarRange())
 
     vaporVtkArray = ImageData.GetPointData().GetArray("rhowatervapor")
@@ -119,35 +139,32 @@ def main():
 
 
     ### =================  velocity field  =================
-    calc = vtk.vtkArrayCalculator()
-    calc.SetInputData(ImageData)
-    calc.AddScalarVariable("u_var", "u", 0)
-    calc.AddScalarVariable("v_var", "v", 0)
-    calc.AddScalarVariable("w_var", "w", 0)
-    calc.SetResultArrayName("wind_velocity_mag")
-    calc.SetFunction("sqrt(u_var^2+v_var^2+w_var^2)")
-    calc.SetAttributeTypeToPointData()
-    calc.Update()
-    windVelMagVtkArray = calc.GetOutput().GetPointData().GetArray("wind_velocity_mag")
-    windVelMagImage = vtkScalarArray2vtkImageData(windVelMagVtkArray, resampledOrigin, resampledPointsDims, resampledCellSpacing)
-    print("windVelMagImage:", windVelMagImage.GetScalarRange())
+    calcMag = vtk.vtkArrayCalculator()
+    calcMag.SetInputData(ImageData)
+    calcMag.AddScalarVariable("u_var", "u", 0)
+    calcMag.AddScalarVariable("v_var", "v", 0)
+    calcMag.AddScalarVariable("w_var", "w", 0)
+    calcMag.SetResultArrayName("wind_velocity_mag")
+    calcMag.SetFunction("sqrt(u_var^2+v_var^2+w_var^2)")
+    calcMag.SetAttributeTypeToPointData()
+    calcMag.Update()
+    windVelMagVtkArray = calcMag.GetOutput().GetPointData().GetArray("wind_velocity_mag")
 
-    calc = vtk.vtkArrayCalculator()
-    calc.SetInputData(ImageData)
-    calc.AddScalarVariable("u_var", "u", 0)
-    calc.AddScalarVariable("v_var", "v", 0)
-    calc.AddScalarVariable("w_var", "w", 0)
-    calc.SetResultArrayName("wind_velocity")
-    calc.SetFunction("u_var*iHat+v_var*jHat+w_var*kHat")
-    calc.SetAttributeTypeToPointData()
-    calc.Update()
-    windVelocityVtkArray = calc.GetOutput().GetPointData().GetArray("wind_velocity")
-    windVelocityImage = vtk.vtkImageData()
-    windVelocityImage.SetOrigin(resampledOrigin)
-    windVelocityImage.SetDimensions(resampledPointsDims)
-    windVelocityImage.SetSpacing(resampledCellSpacing)
-    ## must set both magnitude and velocity field
-    windVelocityImage.GetPointData().SetScalars(windVelMagVtkArray)
+    calcCompose = vtk.vtkArrayCalculator()
+    calcCompose.SetInputConnection(calcMag.GetOutputPort())
+    calcCompose.AddScalarVariable("u_var", "u", 0)
+    calcCompose.AddScalarVariable("v_var", "v", 0)
+    calcCompose.AddScalarVariable("w_var", "w", 0)
+    calcCompose.SetResultArrayName("wind_velocity")
+    calcCompose.SetFunction("u_var*iHat+v_var*jHat+w_var*kHat")
+    calcCompose.SetAttributeTypeToPointData()
+    calcCompose.Update()
+    windVelocityVtkArray = calcCompose.GetOutput().GetPointData().GetArray("wind_velocity")
+
+    ### create an image data containing both scalars and magtitude
+    ### NOTE: must set both magnitude and velocity field
+    windVelocityImage = vtkArray2vtkImageData(windVelMagVtkArray, resampledOrigin, 
+                                              resampledPointsDims, resampledCellSpacing)
     windVelocityImage.GetPointData().SetVectors(windVelocityVtkArray)
     print("windVelocityVtkArray:", windVelocityVtkArray.GetRange())
     print("windVelocityImage:", windVelocityImage.GetScalarRange())
