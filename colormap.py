@@ -127,3 +127,11 @@ vorticityVolumeProperty = vtk.vtkVolumeProperty()
 vorticityVolumeProperty.SetColor(vorticityColormap)
 vorticityVolumeProperty.SetScalarOpacity(vorticityOpacity)
 vorticityVolumeProperty.SetInterpolationTypeToLinear()
+
+
+volumePropertiess = {
+    'grass': grassVolumeProperty,
+    'theta': thetaVolumeProperty,
+    'vapor': vaporVolumeProperty,
+    'vorticity': vorticityVolumeProperty
+}
