@@ -4,5 +4,6 @@ __pycache__
 dataset/mountain_backcurve40_image
 dataset/mountain_backcurve40
 dataset/Wildfire_simplified
+dataset/moodle
 dataset/*.vti
 dataset/*.vts
