@@ -19,12 +19,13 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 - [X] Compute wind gradient field and vorticity.
 - [X] Visualize velocity streamline. 
 - [X] Visualize vorticity. 
+- [X] Animation codes.
 - [ ] Generate animations on 6 datasets.
 - [ ] Convert `theta` from cell to point values.
 - [X] GUI code pipeline.
-- [ ] GUI using `.vts` files.
+- [ ] Data preprocessing (in vtk).
+- [ ] GUI using preprocessed files.
 - [ ] GUI refinements.
-- [ ] Data preprocessing (TBD).
 - [ ] Analyzing factors contribute to VLS behavior.
 - [ ] Final presentation slides.
 - [ ] Final report.
@@ -50,3 +51,7 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 <p align="center">
     <img src="./media/0507.png" alt="" style="width:800px;" />
 </p>
+
+### 5.8 Add Naive Animation Codes & Fix Blank Window Bug
+- Use `getAnimation.py` to get full animations
+- Fix blank window bug
