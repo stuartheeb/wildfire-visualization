@@ -1,5 +1,5 @@
 '''
-5.2
+5.8
 load 1 frame .vts
 vtkStructuredGRid -> vtkResampleToImage -> extract attribute vtkArray & convert to ImageData
 extract attributes
@@ -9,6 +9,7 @@ show vorticity
 add legend bar
 load predefined colormap
 fix camera pos
+fix blank window bug
 '''
 import os
 import vtk
@@ -61,6 +62,11 @@ def vtkArray2vtkImageData(vtkArray, origin, dimension, spacing, isScalar=True, i
     else:
         raise ValueError(">>> Cannot use for cell data. Please manually convert it to vtkImageData.")
     return image
+
+def observeCamera(obj, event):
+    camera = obj.GetRenderWindow().GetRenderers().GetFirstRenderer().GetActiveCamera()
+    print("GetPosition: ", camera.GetPosition())
+    print("GetFocalPoint: ", camera.GetFocalPoint())
 
 def main():
     print("[WildFireB]")
@@ -307,8 +313,9 @@ def main():
 
 
     ### =================  renderer  =================
-    ### reversely ordered in occulusion relationship
     renderer = vtk.vtkRenderer()
+
+    ### reversely ordered in occulusion relationship
     renderer.AddActor(grassVolumeActor)
     renderer.AddActor(soilSurfaceActor)
     renderer.AddActor(thetaVolumeActor)
@@ -318,12 +325,15 @@ def main():
     # renderer.AddActor(windMagLegend)
     renderer.AddActor(vortMagLegend)
     renderer.AddActor(vortVolumeActor)
-
+    renderer.ResetCamera()
+    
     ### set default camera
     renderer.SetBackground(82.0/255, 87.0/255, 110.0/255)
     camera = renderer.GetActiveCamera()
-    camera.SetPosition(1083.2227304747453, -1641.2222349367626, 2619.057849876556)
-    camera.SetFocalPoint(282.39377692021907, -204.98942274883282, 263.6253663432378)
+    # camera.SetPosition(1584.7122378571412, -1694.8525563574726, 3107.997014399731)
+    # camera.SetFocalPoint(212.47420508967954, -154.0755323585413, 310.6819418054576)
+    camera.SetPosition(1387.6849356801695, -1506.2467098983288, 2556.8024005565303)
+    camera.SetFocalPoint(310.6637708489459, -166.44588727049756, 255.25660385125215)
     camera.SetViewUp(-0.37040966573044387, 0.7317561916543173, 0.5721272196889701)
     camera.SetViewAngle(30)
     camera.SetEyeAngle(2)
@@ -332,7 +342,8 @@ def main():
     camera.Roll(0.0)
     camera.Elevation(0.0)
     camera.Azimuth(0.0)
-    camera.SetClippingRange(0.1, 100)
+    camera.SetThickness(20000)
+    camera.Zoom(1.3)
     renderer.SetActiveCamera(camera)
 
     renWin = vtk.vtkRenderWindow()
@@ -343,8 +354,9 @@ def main():
     renWinInteractor = vtk.vtkRenderWindowInteractor()
     renWinInteractor.SetInteractorStyle(MyInteractorStyle())
     renWinInteractor.SetRenderWindow(renWin)
+    renWinInteractor.AddObserver("InteractionEvent", observeCamera)
     renWinInteractor.Initialize()
-    print("> Start: (Scroll a little bit if nothing appeared)")
+    print("> Start:")
     renWinInteractor.Start()
 
 if __name__ == "__main__":

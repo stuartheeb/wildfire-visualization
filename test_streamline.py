@@ -292,6 +292,7 @@ def main():
     renderer.AddActor(vaporVolumeActor)
     renderer.AddActor(streamlinesActor)
     renderer.AddActor(windMagLegend)
+    renderer.ResetCamera()
 
     ### set default camera
     renderer.SetBackground(82.0/255, 87.0/255, 110.0/255)
@@ -318,7 +319,7 @@ def main():
     renWinInteractor.SetInteractorStyle(MyInteractorStyle())
     renWinInteractor.SetRenderWindow(renWin)
     renWinInteractor.Initialize()
-    print("> Start: (Scroll a little bit if nothing appeared)")
+    print("> Start:")
     renWinInteractor.Start()
 
 if __name__ == "__main__":
