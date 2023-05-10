@@ -3,6 +3,11 @@ __pycache__
 .vscode/
 dataset/mountain_backcurve40_image
 dataset/mountain_backcurve40
+dataset/mountain_headcurve40
+dataset/mountain_backcurve80
+dataset/mountain_headcurve80
+dataset/mountain_backcurve320
+dataset/mountain_headcurve320
 dataset/Wildfire_simplified
 dataset/moodle
 dataset/*.vti
