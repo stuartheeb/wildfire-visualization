@@ -5,22 +5,24 @@ Project for the course Scientific Visualization at ETH in spring 2023.
 
 If you are having trouble with dependencies, try using the provided `conda.yml` file.
 
-## TODO List
+## TODO List (**5 points missing**)
 - [X] Load an `.vts` file.
 - [X] Resample curvilinear data to image data (for fire and watervapor) as done in Paraview.
 - [X] Extract curvilinear subset (for soil and grass) as done in Paraview.
-- [X] Define colormap based on Paraview colormap file.
-- [X] Volume rendering on: fire, water vapor, grass.
+- [X] (**5 points**) Define colormap based on Paraview colormap file (transfer function editing).
+- [X] (**5 points**) Volume rendering on: fire, water vapor, grass.
 - [X] Surface rendering on: soil.
 - [X] Set camera intrinsics and extrinsics.
 - [X] Build vtk code pipeline.
 - [ ] Tune colormaps.
 - [X] Compositie wind velocity field.
 - [X] Compute wind gradient field and vorticity.
-- [X] Visualize velocity streamline. 
-- [X] Visualize vorticity. 
+- [X] (**5 points**) Visualize velocity streamline. 
+- [X] (**5/3 points**) Compute & visualize vorticity. 
+- [ ] (**5/3 points**) Compute & visualized lambda2.
+- [ ] (**5/3 points**) Compute & visualized divergence.
 - [X] Animation codes.
-- [ ] Generate animations on 6 datasets.
+- [ ] (**5 points**)Generate animations on 6 datasets.
 - [ ] Convert `theta` from cell to point values.
 - [X] GUI code pipeline.
 - [ ] Data preprocessing (in vtk).
@@ -28,7 +30,7 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 - [ ] GUI refinements.
 - [ ] Analyzing factors contribute to VLS behavior.
 - [ ] Final presentation slides.
-- [ ] Final report.
+- [ ] (*10 points*)Final report.
 
 
 ## Log
