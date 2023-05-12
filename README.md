@@ -19,10 +19,10 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 - [X] Compute wind gradient field and vorticity.
 - [X] (**5 points**) Visualize velocity streamline. 
 - [X] (**5/3 points**) Compute & visualize vorticity. 
-- [ ] (**5/3 points**) Compute & visualized lambda2.
-- [ ] (**5/3 points**) Compute & visualized divergence.
+- [ ] (**5/3 points**) Compute & visualize lambda2.
+- [ ] (**5/3 points**) Compute & visualize divergence.
 - [X] Animation codes.
-- [ ] (**5 points**)Generate animations on 6 datasets.
+- [ ] (**5 points**) Generate animations on 6 datasets.
 - [ ] Convert `theta` from cell to point values.
 - [X] GUI code pipeline.
 - [ ] Data preprocessing (in vtk).
@@ -30,7 +30,7 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 - [ ] GUI refinements.
 - [ ] Analyzing factors contribute to VLS behavior.
 - [ ] Final presentation slides.
-- [ ] (*10 points*)Final report.
+- [ ] (*10 points*) Final report.
 
 
 ## Log
