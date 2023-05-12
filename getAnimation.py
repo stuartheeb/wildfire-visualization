@@ -1,8 +1,10 @@
 '''
-5.8
+5.12
 based on test_vorticity
 naively save each frame as PNG
 no preprocessing
+task type detecting
+cameras for both backcurve and headcurve
 '''
 import os
 import vtk
@@ -13,7 +15,12 @@ from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
 import time
 
 # TODO: modify dataset directory
+# datasetDir = "dataset/mountain_backcurve40"
+# datasetDir = "dataset/mountain_backcurve80"
+# datasetDir = "dataset/mountain_backcurve320"
+# datasetDir = "dataset/mountain_headcurve40"
 datasetDir = "dataset/mountain_headcurve80"
+# datasetDir = "dataset/mountain_headcurve320"
 #datasetDir = "dataset/test"
 # TODO: modify job suffix
 jobSuffix = "_pureFire"     # _pureFire | _stream | _vort
@@ -328,18 +335,23 @@ def mainRender(grid_file_path, img_name):
     ### set default camera
     renderer.SetBackground(82.0/255, 87.0/255, 110.0/255)
     camera = renderer.GetActiveCamera()
-    camera.SetPosition(1387.6849356801695, -1506.2467098983288, 2556.8024005565303)
-    camera.SetFocalPoint(310.6637708489459, -166.44588727049756, 255.25660385125215)
-    camera.SetViewUp(-0.37040966573044387, 0.7317561916543173, 0.5721272196889701)
-    camera.SetViewAngle(30)
-    camera.SetEyeAngle(2)
-    camera.SetFocalDisk(1)
-    camera.SetFocalDistance(0)
-    camera.Roll(0.0)
-    camera.Elevation(0.0)
-    camera.Azimuth(0.0)
+    # ### for backcurves
+    if "backcurve" in datasetDir:
+        camera.SetPosition(1387.6849356801695, -1506.2467098983288, 2556.8024005565303)
+        camera.SetFocalPoint(310.6637708489459, -166.44588727049756, 255.25660385125215)
+        camera.SetViewUp(-0.37040966573044387, 0.7317561916543173, 0.5721272196889701)
+        camera.Zoom(1.3)
+    ### for headcurves
+    elif "headcurve" in datasetDir:
+        camera.SetPosition(-815.6233940186918, 1211.2377832946756, 1829.6086948523784)
+        camera.SetFocalPoint(53.09335083347671, 39.05737530202661, -43.26816237979907)
+        camera.SetViewUp(0.3549008855287047, -0.7095787673286341, 0.6087227073202688)
+        camera.Zoom(1.0)
+    else:
+        raise ValueError("!!! Invalid datasetDir: {}. Please use default datset name that contains either \"backcurve\" or \"headcurve\".".format(datasetDir))
+    ### general settings
+    camera.SetClippingRange(1, 20000)   ### (0.01, 20k) will fail
     camera.SetThickness(20000)
-    camera.Zoom(1.3)
     renderer.SetActiveCamera(camera)
 
     renWin = vtk.vtkRenderWindow()
