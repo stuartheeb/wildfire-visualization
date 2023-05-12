@@ -13,9 +13,10 @@ from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
 import time
 
 # TODO: modify dataset directory
-datasetDir = "dataset/mountain_backcurve40"
+datasetDir = "dataset/mountain_headcurve80"
+#datasetDir = "dataset/test"
 # TODO: modify job suffix
-jobSuffix = "_pureFire"     # _stream | _vort
+jobSuffix = "_pureFire"     # _pureFire | _stream | _vort
 
 Attribute2IndexDict = {"O2": 0,
                         "convht_1": 1,
@@ -316,10 +317,12 @@ def mainRender(grid_file_path, img_name):
     renderer.AddActor(thetaVolumeActor)
     renderer.AddActor(thetaLegend)
     renderer.AddActor(vaporVolumeActor)
-    # renderer.AddActor(streamlinesActor)
-    # renderer.AddActor(windMagLegend)
-    # renderer.AddActor(vortMagLegend)
-    # renderer.AddActor(vortVolumeActor)
+    if(jobSuffix == "_stream"):
+        renderer.AddActor(streamlinesActor)
+        renderer.AddActor(windMagLegend)
+    elif(jobSuffix == "_vort"):
+        renderer.AddActor(vortMagLegend)
+        renderer.AddActor(vortVolumeActor)
     renderer.ResetCamera()
 
     ### set default camera
