@@ -1,0 +1,1 @@
+ffmpeg -framerate 5 -i mountain_backcurve40_vort/%02d000.png -c:v libx264 -profile:v high -crf 20 -pix_fmt yuv420p mountain_backcurve40_vort.mp4
