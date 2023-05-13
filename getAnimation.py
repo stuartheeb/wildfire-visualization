@@ -26,6 +26,7 @@ datasetDir = "dataset/mountain_headcurve80"
 # TODO: modify job suffix
 jobSuffix = "_pureFire"     # _pureFire | _stream | _vort
 addFrameIextFlag = True     # for adding frame index
+skipExistedFlag = True     # for skipping existed files
 
 Attribute2IndexDict = {"O2": 0,
                         "convht_1": 1,
@@ -397,7 +398,7 @@ def main():
     for i, gridFile in enumerate(gridFileList):
         grid_file_path = os.path.join(datasetDir, gridFile)
         image_name = os.path.join("results", jobPrefix, "{0:05d}.png".format(int(1000*(i+1))))
-        if os.path.exists(image_name):
+        if os.path.exists(image_name) and skipExistedFlag is True:
             print("> Already exist: {}".format(image_name))
         else:
             mainRender(grid_file_path, image_name)
@@ -405,7 +406,7 @@ def main():
         if addFrameIextFlag is True:
             img = Image.open(image_name)
             draw = ImageDraw.Draw(img)
-            text = "{0:02d}".format(i)
+            text = "{0:02d}".format(i+1)
             font = ImageFont.truetype("arial.ttf", 24)
             draw.text((10, 10), text, (255, 255, 255), font)
             img.save(image_name)
