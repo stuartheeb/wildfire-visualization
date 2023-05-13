@@ -13,6 +13,7 @@ from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
 import colormap
 from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
 import time
+from PIL import Image, ImageDraw, ImageFont
 
 # TODO: modify dataset directory
 # datasetDir = "dataset/mountain_backcurve40"
@@ -396,6 +397,13 @@ def main():
         grid_file_path = os.path.join(datasetDir, gridFile)
         image_name = os.path.join("results", jobPrefix, "{0:05d}.png".format(int(1000*(i+1))))
         mainRender(grid_file_path, image_name)
+        ### =================  write frame index  =================
+        img = Image.open(image_name)
+        draw = ImageDraw.Draw(img)
+        text = "{0:02d}".format(i)
+        font = ImageFont.truetype("arial.ttf", 24)
+        draw.text((10, 10), text, (255, 255, 255), font)
+        img.save(image_name)
         
     print("> Done: [{}]".format(datasetDir))
         
