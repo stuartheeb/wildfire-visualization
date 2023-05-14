@@ -222,7 +222,7 @@ def mainRender(grid_file_path, img_name):
 
     vortNP = vtk_to_numpy(vortPointImage.GetPointData().GetArray("Vorticity"))
     vortMagNP = np.linalg.norm(vortNP, ord=2, axis=1)
-    vortMagNP_3d = vortMagNP.reshape(resampledPointsDims)
+    vortMagNP_3d = vortMagNP.reshape(resampledPointsDims[::-1])
     vortMagNP_3d[-5:, :, :] = int(0)    ### indexing in z, y, x order
     vortVtkArray = numpy_to_vtk(vortMagNP_3d.reshape(-1))
     vortVtkArray.SetName("vortMag")
