@@ -129,9 +129,10 @@ vorticityVolumeProperty.SetScalarOpacity(vorticityOpacity)
 vorticityVolumeProperty.SetInterpolationTypeToLinear()
 
 
-volumePropertiess = {
+properties = {
     'grass': grassVolumeProperty,
     'theta': thetaVolumeProperty,
     'vapor': vaporVolumeProperty,
-    'vorticity': vorticityVolumeProperty
+    'vorticity': vorticityVolumeProperty,
+    'soil': soilLookupTable,
 }

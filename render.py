@@ -1,12 +1,16 @@
+import numpy as np
 import vtk
+from vtk.util.numpy_support import numpy_to_vtk
+
 import colormap
 
-def renderVolume(renderer, datasetReader, origin, dimensions, spacing, dataName, imageName):
+def renderVolume(renderer, dataset, name, origin, dimensions, spacing):
+    vtkArray = numpy_to_vtk(dataset[name])
     image = vtk.vtkImageData()
     image.SetOrigin(origin)
     image.SetDimensions(dimensions)
     image.SetSpacing(spacing)
-    image.GetPointData().SetScalars(datasetReader.GetOutput().GetPointData().GetArray(dataName))
+    image.GetPointData().SetScalars(vtkArray)
 
     volumeMapper = vtk.vtkSmartVolumeMapper()
     volumeMapper.SetInputData(image)
@@ -14,43 +18,23 @@ def renderVolume(renderer, datasetReader, origin, dimensions, spacing, dataName,
 
     actor = vtk.vtkVolume()
     actor.SetMapper(volumeMapper)
-    actor.SetProperty(colormap.volumePropertiess[imageName])
+    actor.SetProperty(colormap.properties[name])
 
     renderer.AddActor(actor)
 
-    return image
+    return image, actor
 
-def renderStreamline(renderer, datasetReader, origin, dimensions, spacing):
-    # TODO: move the computation below to preprocess
-    calcMag = vtk.vtkArrayCalculator()
-    calcMag.SetInputConnection(datasetReader.GetOutputPort())
-    calcMag.AddScalarVariable("u_var", "u", 0)
-    calcMag.AddScalarVariable("v_var", "v", 0)
-    calcMag.AddScalarVariable("w_var", "w", 0)
-    calcMag.SetResultArrayName("wind_velocity_mag")
-    calcMag.SetFunction("sqrt(u_var^2+v_var^2+w_var^2)")
-    calcMag.SetAttributeTypeToPointData()
-    calcMag.Update()
-
-    calcVec = vtk.vtkArrayCalculator()
-    calcVec.SetInputConnection(datasetReader.GetOutputPort())
-    calcVec.AddScalarVariable("u_var", "u", 0)
-    calcVec.AddScalarVariable("v_var", "v", 0)
-    calcVec.AddScalarVariable("w_var", "w", 0)
-    calcVec.SetResultArrayName('wind_velocity')
-    calcVec.SetFunction('u_var*iHat+v_var*jHat+w_var*kHat')
-    calcVec.SetAttributeTypeToPointData()
-    calcVec.Update()
-
+def renderStreamline(dataset, origin, dimensions, spacing):
     windVelocityImage = vtk.vtkImageData()
     windVelocityImage.SetOrigin(origin)
     windVelocityImage.SetDimensions(dimensions)
     windVelocityImage.SetSpacing(spacing)
-    windVelMagVtkArray = calcMag.GetOutput().GetPointData().GetArray("wind_velocity_mag")
+    windVelMagVtkArray = numpy_to_vtk(dataset['windVelocityMag'])
+    windVelMagVtkArray.SetName("wind_velocity_mag")
     windVelocityImage.GetPointData().SetScalars(windVelMagVtkArray)
-    windVelocityVtkArray = calcVec.GetOutput().GetPointData().GetArray('wind_velocity')
+    windVelocityVtkArray = numpy_to_vtk(dataset['windVelocity'])
+    windVelocityVtkArray.SetName("wind_velocity")
     windVelocityImage.GetPointData().SetVectors(windVelocityVtkArray)
-
     lineSeed = vtk.vtkLineSource()
     lineSeed.SetPoint1(3.15, -750, 222)
     lineSeed.SetPoint2(3.15, 750, 222)
@@ -92,4 +76,23 @@ def renderStreamline(renderer, datasetReader, origin, dimensions, spacing):
     windMagLegend.SetWidth(0.03)
     windMagLegend.SetHeight(0.3)
 
-    return calcMag, calcVec, windVelocityImage, [streamlinesActor, windMagLegend]
+    return windVelocityImage, [streamlinesActor, windMagLegend]
+
+def renderSurface(renderer, rawDataset, dataset, name):
+    vtkArray = numpy_to_vtk(dataset[name])
+    grid = vtk.vtkStructuredGrid()
+    grid.CopyStructure(rawDataset)
+    grid.GetPointData().SetScalars(vtkArray)
+    
+    surfaceMapper = vtk.vtkDataSetMapper()
+    surfaceMapper.SetInputData(grid)
+    surfaceMapper.SetLookupTable(colormap.properties[name])
+    surfaceMapper.Update()
+
+    actor = vtk.vtkActor()
+    actor.SetMapper(surfaceMapper)
+    actor.GetProperty().SetRepresentationToSurface()
+
+    renderer.AddActor(actor)
+
+    return grid
