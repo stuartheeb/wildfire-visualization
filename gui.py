@@ -1,3 +1,5 @@
+import os
+
 import vtk
 import colormap
 from utils import createImage
@@ -14,28 +16,28 @@ def setupLegends(renderer):
 
     renderer.AddActor(thetaLegend)
 
-def setupStreamlineButton(renderer, buttonWidget, renderWindowInteractor):
-    green = [145, 207, 96]
-    gray = [153, 153, 153]
-    image1 = vtk.vtkImageData()
-    image2 = vtk.vtkImageData()
-    createImage(image1, green, gray)
-    createImage(image2, gray, green)
+def setupButton(name, location, renderer, buttonWidget, renderWindowInteractor):
+    imageReaderOn = vtk.vtkPNGReader()
+    imageReaderOn.SetFileName(os.path.join('assets', f'{name}On.png'))
+    imageReaderOn.Update()
+    imageReaderOff = vtk.vtkPNGReader()
+    imageReaderOff.SetFileName(os.path.join('assets', f'{name}Off.png'))
+    imageReaderOff.Update()
 
     buttonRepresentation = vtk.vtkTexturedButtonRepresentation2D()
     buttonRepresentation.SetNumberOfStates(2)
-    buttonRepresentation.SetButtonTexture(0, image1)
-    buttonRepresentation.SetButtonTexture(1, image2)
+    buttonRepresentation.SetButtonTexture(0, imageReaderOff.GetOutput())
+    buttonRepresentation.SetButtonTexture(1, imageReaderOn.GetOutput())
 
     buttonWidget.SetInteractor(renderWindowInteractor)
     buttonWidget.SetRepresentation(buttonRepresentation)
 
     upperLeft = vtk.vtkCoordinate()
     upperLeft.SetCoordinateSystemToNormalizedDisplay()
-    upperLeft.SetValue(0, 1.0)
+    upperLeft.SetValue(0, location)
 
     bds = [0] * 6
-    sz = 50.0
+    sz = 200.0
     bds[0] = upperLeft.GetComputedDisplayValue(renderer)[0] - sz
     bds[1] = bds[0] + sz
     bds[2] = upperLeft.GetComputedDisplayValue(renderer)[1] - sz
@@ -50,7 +52,7 @@ def setupStreamlineButton(renderer, buttonWidget, renderWindowInteractor):
 def setupTimeSlider(sliderWidget, renderWindowInteractor):
     sliderRep = vtk.vtkSliderRepresentation2D()
     sliderRep.SetMinimumValue(1)
-    sliderRep.SetMaximumValue(15)
+    sliderRep.SetMaximumValue(40)
     sliderRep.SetValue(1)
     sliderRep.SetTitleText('Time')
     sliderRep.GetSliderProperty().SetColor(0.2, 0.2, 0.6)
@@ -69,7 +71,10 @@ def setupTimeSlider(sliderWidget, renderWindowInteractor):
     sliderWidget.SetRepresentation(sliderRep)
     sliderWidget.SetAnimationModeToAnimate()
 
-def setup(renderer, buttonWidget, sliderWidget, renderWindowInteractor):
+def setup(renderer, buttons, sliderWidget, renderWindowInteractor):
     setupLegends(renderer)
-    setupStreamlineButton(renderer, buttonWidget, renderWindowInteractor)
     setupTimeSlider(sliderWidget, renderWindowInteractor)
+    location = 1.0
+    for name, button in buttons.items():
+        setupButton(name, location, renderer, button, renderWindowInteractor)
+        location += 0.1

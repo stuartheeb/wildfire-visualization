@@ -1,26 +1,25 @@
+import argparse
+import os
 import numpy as np
 
 import vtk
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
 
 from callbacks import vtkSliderCallback, vtkButtonCallback
-from render import renderVolume,renderStreamline
+from render import renderVolume,renderStreamline, renderSurface
 import gui
 
-def main():
+def main(datadir):
     # ---------- load data --------------------
-    # TODO: take data dir as an argument
-    datasetReader = vtk.vtkXMLImageDataReader()
-    datasetReader.SetFileName('../paraview/data/output.01000.vti')
-    datasetReader.Update()
-    dataset = datasetReader.GetOutput()
+    dataset = np.load(os.path.join(datadir, 'preprocessed/output.1000.npz'))
 
     # ----------- Global Variables ------------
-    bounds = np.array(dataset.GetBounds()) 
-    resampledOrigin = bounds[::2]
-    resampledPointsDims = np.array([300, 250, 150], dtype=int)
-    resampledCellsDims = resampledPointsDims - 1
-    resampledCellSpacing = (bounds[1::2] - bounds[:-1:2]) / resampledCellsDims
+    extent = dataset["extent"]
+    resampledOrigin = dataset['resampledOrigin']
+    resampledPointsDims = dataset["resampledPointsDims"]
+    resampledCellSpacing = dataset["resampledCellSpacing"]
+    grassPointsDims = dataset["grassPointsDims"]
+    grassCellSpacing = dataset["grassCellSpacing"]
 
     # ---------  renderer and window interactor -------------
     renderWindow = vtk.vtkRenderWindow()
@@ -31,14 +30,25 @@ def main():
     renderer.SetBackground(0, 0, 0)
 
     # --------------- setup visualization -----------------------
-    grassImage = renderVolume(renderer, datasetReader, resampledOrigin, resampledPointsDims, resampledCellSpacing,
-                              dataName='rhof_1', imageName='grass')
-    thetaImage = renderVolume(renderer, datasetReader, resampledOrigin, resampledPointsDims, resampledCellSpacing,
-                              dataName='theta', imageName='theta')
-    vaporImage = renderVolume(renderer, datasetReader, resampledOrigin, resampledPointsDims, resampledCellSpacing,
-                              dataName='rhowatervapor', imageName='vapor')
-    calcMag, calcVec, windVelocityImage, streamlineActors = \
-        renderStreamline(renderer, datasetReader, resampledOrigin, resampledPointsDims, resampledCellSpacing)
+    grassImage, _ = renderVolume(renderer, dataset, 'grass', resampledOrigin, grassPointsDims, grassCellSpacing)
+    thetaImage, _ = renderVolume(renderer, dataset, 'theta', resampledOrigin, resampledPointsDims, resampledCellSpacing)
+    vaporImage, _ = renderVolume(renderer, dataset, 'vapor', resampledOrigin, resampledPointsDims, resampledCellSpacing)
+    vortImage, vortActor = renderVolume(renderer, dataset, 'vorticity', resampledOrigin, resampledPointsDims, resampledCellSpacing)
+    renderer.RemoveActor(vortActor) # default init without vorticity
+
+    # --------------- soil --------------------
+    # TODO: another way to avoid this preprocess
+    rawDataset = vtk.vtkXMLStructuredGridReader()
+    rawDataset.SetFileName('dataset/mountain_backcurve40/output.40000.vts')
+    rawDataset.Update()
+
+    extractor = vtk.vtkExtractGrid()
+    extractor.SetInputConnection(rawDataset.GetOutputPort())
+    extractor.SetVOI(extent[0], extent[1], extent[2], extent[3], 0, 5)
+    extractor.Update()
+    soilSurface = renderSurface(renderer, extractor.GetOutput(), dataset, 'soil')
+    windVelocityImage, streamlineActors = \
+        renderStreamline(dataset, resampledOrigin, resampledPointsDims, resampledCellSpacing)
 
     renderWindow.AddRenderer(renderer)
     renderWindowInteractor = vtk.vtkRenderWindowInteractor()
@@ -46,19 +56,27 @@ def main():
     renderWindowInteractor.SetRenderWindow(renderWindow)
 
     # -------------- GUI -----------------------------
-    buttonWidget = vtk.vtkButtonWidget()
+    streamlineButton = vtk.vtkButtonWidget()
+    vorticityButton = vtk.vtkButtonWidget()
     sliderWidget = vtk.vtkSliderWidget()
-    gui.setup(renderer, buttonWidget, sliderWidget, renderWindowInteractor)
+    gui.setup(renderer, 
+              {'vorticity': vorticityButton, 'streamline': streamlineButton}, 
+              sliderWidget, renderWindowInteractor)
 
     # ------------------- callbacks --------------------
-    callbackButton = vtkButtonCallback(renderer=renderer, actors=streamlineActors, 
-                                       calcMag=calcMag, calcVec=calcVec, wind=windVelocityImage)
-    buttonWidget.AddObserver("StateChangedEvent", callbackButton)
-    callbackSlider = vtkSliderCallback(datasetReader, buttonWidget=buttonWidget,
-                                 images={'theta': thetaImage, 'rhof_1': grassImage, 'rhowatervapor': vaporImage},
-                                  calcMag=calcMag,
-                                  calcVec=calcVec,
-                                  wind=windVelocityImage)
+    streamlineCallback = vtkButtonCallback(renderer=renderer, actors=streamlineActors, dataset=dataset,
+                                       watchDict={'windVelocityMag': windVelocityImage,
+                                                  'windVelocity': windVelocityImage})
+    streamlineButton.AddObserver("StateChangedEvent", streamlineCallback)
+    vorticityCallback = vtkButtonCallback(renderer=renderer, actors=[vortActor], dataset=dataset,
+                                          watchDict={'vorticity': vortImage})
+    vorticityButton.AddObserver("StateChangedEvent", vorticityCallback)
+    callbackSlider = vtkSliderCallback(datadir, buttonCallbacks=[streamlineCallback, vorticityCallback], dataset=dataset,
+                                       watchDict={'theta': thetaImage, 'grass': grassImage, 
+                                                  'vapor': vaporImage, 'soil': soilSurface,
+                                                  'windVelocityMag': windVelocityImage,
+                                                  'windVelocity': windVelocityImage,
+                                                  'vorticity': vortImage})
     sliderWidget.AddObserver('InteractionEvent', callbackSlider)
     sliderWidget.EnabledOn()
 
@@ -69,4 +87,11 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--datadir', type=str, default='dataset/mountain_backcurve40',
+                        help='Path to the dataset')
+    args = parser.parse_args()
+    datadir = args.datadir
+
+    # TODO: option to select dataset to load 
+    main(datadir)
