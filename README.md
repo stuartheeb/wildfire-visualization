@@ -57,3 +57,6 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 ### 5.8 Add Naive Animation Codes & Fix Blank Window Bug
 - Use `getAnimation.py` to get full animations
 - Fix blank window bug
+
+### 5.14 All animation videos uploaded
+- All animation videos head/curve 40/80/320 fire/streamlines/vorticity uploaded
