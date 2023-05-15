@@ -49,10 +49,10 @@ def setupButton(name, location, renderer, buttonWidget, renderWindowInteractor):
     buttonRepresentation.SetState(0)
     buttonWidget.On()
 
-def setupTimeSlider(sliderWidget, renderWindowInteractor):
+def setupTimeSlider(sliderWidget, num_frames, renderWindowInteractor):
     sliderRep = vtk.vtkSliderRepresentation2D()
     sliderRep.SetMinimumValue(1)
-    sliderRep.SetMaximumValue(40)
+    sliderRep.SetMaximumValue(num_frames)
     sliderRep.SetValue(1)
     sliderRep.SetTitleText('Time')
     sliderRep.GetSliderProperty().SetColor(0.2, 0.2, 0.6)
@@ -71,9 +71,9 @@ def setupTimeSlider(sliderWidget, renderWindowInteractor):
     sliderWidget.SetRepresentation(sliderRep)
     sliderWidget.SetAnimationModeToAnimate()
 
-def setup(renderer, buttons, sliderWidget, renderWindowInteractor):
+def setup(renderer, buttons, sliderWidget, num_frames, renderWindowInteractor):
     setupLegends(renderer)
-    setupTimeSlider(sliderWidget, renderWindowInteractor)
+    setupTimeSlider(sliderWidget, num_frames, renderWindowInteractor)
     location = 1.0
     for name, button in buttons.items():
         setupButton(name, location, renderer, button, renderWindowInteractor)

@@ -9,7 +9,8 @@ from callbacks import vtkSliderCallback, vtkButtonCallback
 from render import renderVolume,renderStreamline, renderSurface
 import gui
 
-def main(datadir):
+def main(datadir, num_frames):
+    print(str(num_frames) + " frames to render")
     # ---------- load data --------------------
     dataset = np.load(os.path.join(datadir, 'preprocessed/output.1000.npz'))
 
@@ -39,7 +40,7 @@ def main(datadir):
     # --------------- soil --------------------
     # TODO: another way to avoid this preprocess
     rawDataset = vtk.vtkXMLStructuredGridReader()
-    rawDataset.SetFileName('dataset/mountain_backcurve40/output.40000.vts')
+    rawDataset.SetFileName(os.path.join(datadir, 'preprocessed/output.1000.vts'))
     rawDataset.Update()
 
     extractor = vtk.vtkExtractGrid()
@@ -61,7 +62,7 @@ def main(datadir):
     sliderWidget = vtk.vtkSliderWidget()
     gui.setup(renderer, 
               {'vorticity': vorticityButton, 'streamline': streamlineButton}, 
-              sliderWidget, renderWindowInteractor)
+              sliderWidget, num_frames, renderWindowInteractor)
 
     # ------------------- callbacks --------------------
     streamlineCallback = vtkButtonCallback(renderer=renderer, actors=streamlineActors, dataset=dataset,
@@ -93,5 +94,15 @@ if __name__ == '__main__':
     args = parser.parse_args()
     datadir = args.datadir
 
-    # TODO: option to select dataset to load 
-    main(datadir)
+    if not os.path.exists(os.path.join(datadir, "preprocessed")):
+        print("> Preprocessed files do not exist")
+    else:
+        _file_list = os.listdir(os.path.join(datadir, "preprocessed"))
+        num_frames = 0
+        for i, grid_file in enumerate(_file_list):
+            if grid_file.endswith(".npz"):
+                num_frames += 1
+        if(num_frames == 0):
+            print("> Preprocessed files do not exist")
+        else:
+            main(datadir, num_frames)
