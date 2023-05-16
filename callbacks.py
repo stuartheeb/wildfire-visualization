@@ -46,3 +46,25 @@ class vtkButtonCallback(object):
             updateFrame(self.watchDict, self.dataset, state)
             for actor in self.actors:
                 self.renderer.AddActor(actor)
+
+class vtkTransferFunctionButtonCallback(object):
+    def __init__(self, renderWindow, transferRenderer, renderWindowInteractor, interactor, transferInteractor):
+        self.renderWindow = renderWindow
+        self.transferRenderer = transferRenderer
+        self.renderWindowInteractor = renderWindowInteractor
+        self.interactor = interactor
+        self.transferInteractor = transferInteractor
+
+    def __call__(self, buttonWidget, eventId):
+        state = buttonWidget.GetSliderRepresentation().GetState()
+        if state == 0:
+            print("Transfer OFF")
+            self.renderWindow.RemoveRenderer(self.transferRenderer)
+
+            self.renderWindowInteractor.SetInteractorStyle(self.interactor)
+        else:
+            print("Transfer ON")
+            self.renderWindow.AddRenderer(self.transferRenderer)
+
+            self.renderWindowInteractor.SetInteractorStyle(self.interactor)
+            self.renderWindowInteractor.SetInteractorStyle(self.transferInteractor.GetInteractorStyle())
