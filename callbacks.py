@@ -58,12 +58,10 @@ class vtkTransferFunctionButtonCallback(object):
     def __call__(self, buttonWidget, eventId):
         state = buttonWidget.GetSliderRepresentation().GetState()
         if state == 0:
-            print("Transfer OFF")
             self.renderWindow.RemoveRenderer(self.transferRenderer)
 
             self.renderWindowInteractor.SetInteractorStyle(self.interactor)
         else:
-            print("Transfer ON")
             self.renderWindow.AddRenderer(self.transferRenderer)
 
             self.renderWindowInteractor.SetInteractorStyle(self.interactor)
