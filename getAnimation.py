@@ -25,7 +25,7 @@ datasetDir = "dataset/mountain_backcurve40"
 #datasetDir = "dataset/test"
 # TODO: modify job suffix
 jobSuffix = "_isosurface"     # _pureFire | _stream | _vort | _isosurface
-addFrameIextFlag = False     # for adding frame index
+addFrameIextFlag = True     # for adding frame index
 skipExistedFlag = True     # for skipping existed files
 
 Attribute2IndexDict = {"O2": 0,
