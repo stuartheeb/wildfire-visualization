@@ -1,10 +1,11 @@
 '''
-5.12
+5.16
 based on test_vorticity
 naively save each frame as PNG
 no preprocessing
 task type detecting
 cameras for both backcurve and headcurve
+add isosurface
 '''
 import os
 import vtk
@@ -16,15 +17,15 @@ import time
 from PIL import Image, ImageDraw, ImageFont
 
 # TODO: modify dataset directory
-# datasetDir = "dataset/mountain_backcurve40"
+datasetDir = "dataset/mountain_backcurve40"
 # datasetDir = "dataset/mountain_backcurve80"
 # datasetDir = "dataset/mountain_backcurve320"
 # datasetDir = "dataset/mountain_headcurve40"
-datasetDir = "dataset/mountain_headcurve80"
+# datasetDir = "dataset/mountain_headcurve80"
 # datasetDir = "dataset/mountain_headcurve320"
 #datasetDir = "dataset/test"
 # TODO: modify job suffix
-jobSuffix = "_pureFire"     # _pureFire | _stream | _vort
+jobSuffix = "_isosurface"     # _pureFire | _stream | _vort | _isosurface
 addFrameIextFlag = True     # for adding frame index
 skipExistedFlag = True     # for skipping existed files
 
@@ -229,6 +230,18 @@ def mainRender(grid_file_path, img_name):
     vortImage = vtkArray2vtkImageData(vortVtkArray, resampledOrigin, 
                                       resampledPointsDims, resampledCellSpacing)
     
+    ### =================  isosurface  =================
+    #do binary thresholding on thetaImage
+    '''thresholdFilter = vtk.vtkImageThreshold()
+    thresholdFilter.SetInputData(thetaImage)
+    thresholdFilter.ThresholdByUpper(300)
+    thresholdFilter.SetInValue(1.0)
+    thresholdFilter.SetOutValue(0.0)'''
+
+    #create isosurface/countour filter
+    contourFilter = vtk.vtkContourFilter()
+    contourFilter.SetInputData(thetaImage)
+    contourFilter.SetValue(0, 330)
 
     ### =================  mapper  =================
     ### one mapper for each volume
@@ -259,6 +272,10 @@ def mainRender(grid_file_path, img_name):
     vortVolumeMapper.SetInputData(vortImage)
     vortVolumeMapper.Update()
 
+    contourMapper = vtk.vtkPolyDataMapper()
+    contourMapper.SetInputConnection(contourFilter.GetOutputPort())
+    contourMapper.SetLookupTable(colormap.thetaIsoLookupTable)
+    contourMapper.Update()
 
     ### =================  actor  =================
     ### one actor for each volume
@@ -289,6 +306,9 @@ def mainRender(grid_file_path, img_name):
     vortVolumeActor.SetMapper(vortVolumeMapper)
     vortVolumeActor.SetProperty(colormap.vorticityVolumeProperty)
 
+    contourActor = vtk.vtkActor()
+    contourActor.SetMapper(contourMapper)
+    #contourActor.GetProperty().SetOpacity(0.5)
 
     ### =================  legend  =================
     thetaLegend = vtk.vtkScalarBarActor()
@@ -333,6 +353,8 @@ def mainRender(grid_file_path, img_name):
     elif(jobSuffix == "_vort"):
         renderer.AddActor(vortMagLegend)
         renderer.AddActor(vortVolumeActor)
+    elif(jobSuffix == "_isosurface"):
+        renderer.AddActor(contourActor)
     renderer.ResetCamera()
 
     ### set default camera

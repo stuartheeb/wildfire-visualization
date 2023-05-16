@@ -8,6 +8,7 @@ vapor_path = "dataset/SV_vapor.json"
 grass_path = "dataset/SV_grass.json"
 soil_path = "dataset/SV_soil.json"
 vorticity_path = "dataset/SV_vorticity.json"
+iso_path = "dataset/SV_isosurface.json"
 
 
 ### =================  theta  =================
@@ -128,6 +129,21 @@ vorticityVolumeProperty.SetColor(vorticityColormap)
 vorticityVolumeProperty.SetScalarOpacity(vorticityOpacity)
 vorticityVolumeProperty.SetInterpolationTypeToLinear()
 
+### =================  isosurface  =================
+rgba_list.append([0.901, 0, 0] + [1.0])
+rgba_list.append([0.901, 0, 0] + [1.0])
+thetaIso_RGBA = np.array(rgba_list)
+x = np.linspace(0, 1, len(thetaIso_RGBA))
+getColorCorrespondingToValue = interp1d(x, thetaIso_RGBA.T)
+
+thetaIsoLookupTable = vtk.vtkLookupTable()
+thetaIsoLookupTable.SetScaleToLinear()
+thetaIsoLookupTable.SetNumberOfTableValues(numColors)
+for i in range(numColors):
+    val = i / (numColors - 1)
+    r, g, b, a = getColorCorrespondingToValue(val) ### a 1d interpolate mapper
+    thetaIsoLookupTable.SetTableValue(i, r, g, b, a) 
+thetaIsoLookupTable.Build()
 
 properties = {
     'grass': grassVolumeProperty,
