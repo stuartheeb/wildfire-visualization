@@ -241,7 +241,7 @@ def mainRender(grid_file_path, img_name):
     #create isosurface/countour filter
     contourFilter = vtk.vtkContourFilter()
     contourFilter.SetInputData(thetaImage)
-    contourFilter.SetValue(0, 330)
+    contourFilter.SetValue(0, 310)
 
     ### =================  mapper  =================
     ### one mapper for each volume
