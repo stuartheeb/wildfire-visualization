@@ -63,3 +63,10 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 
 ### 5.14 All animation videos uploaded
 - All animation videos head/curve 40/80/320 fire/streamlines/vorticity uploaded
+
+### 5.15 Fully automatic preprocessing
+- Fully automatic preprocessing which allows the GUI to run more smoothly
+
+### 5.16 Transfer function editing
+- Isosurfaces for the fire-air boundary
+- Transfer function editing for vorticity (TODO: load default colormaps)
