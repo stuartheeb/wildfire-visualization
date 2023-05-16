@@ -6,7 +6,7 @@ import vtk
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
 
 from callbacks import vtkSliderCallback, vtkButtonCallback
-from render import renderVolume,renderStreamline, renderSurface
+from render import renderVolume, renderStreamline, renderSurface
 import gui
 
 def main(datadir, num_frames):
@@ -40,7 +40,7 @@ def main(datadir, num_frames):
     # --------------- soil --------------------
     # TODO: another way to avoid this preprocess
     rawDataset = vtk.vtkXMLStructuredGridReader()
-    rawDataset.SetFileName(os.path.join(datadir, 'preprocessed/output.1000.vts'))
+    rawDataset.SetFileName(os.path.join(datadir, 'output.1000.vts'))
     rawDataset.Update()
 
     extractor = vtk.vtkExtractGrid()
