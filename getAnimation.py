@@ -1,10 +1,11 @@
 '''
-5.12
+5.16
 based on test_vorticity
 naively save each frame as PNG
 no preprocessing
 task type detecting
 cameras for both backcurve and headcurve
+add isosurface
 '''
 import os
 import vtk
@@ -239,10 +240,8 @@ def mainRender(grid_file_path, img_name):
 
     #create isosurface/countour filter
     contourFilter = vtk.vtkContourFilter()
-    #contourFilter = vtk.vtkMarchingCubes()
-    #contourFilter.SetInputConnection(thresholdFilter.GetOutputPort())
     contourFilter.SetInputData(thetaImage)
-    contourFilter.SetValue(0,330)
+    contourFilter.SetValue(0, 330)
 
     ### =================  mapper  =================
     ### one mapper for each volume
@@ -275,6 +274,7 @@ def mainRender(grid_file_path, img_name):
 
     contourMapper = vtk.vtkPolyDataMapper()
     contourMapper.SetInputConnection(contourFilter.GetOutputPort())
+    contourMapper.SetLookupTable(colormap.thetaIsoLookupTable)
     contourMapper.Update()
 
     ### =================  actor  =================
