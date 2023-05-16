@@ -28,7 +28,7 @@ def main(datadir, num_frames):
 
     renderer = vtk.vtkRenderer()
     renderer.SetViewport(0, 0, 1.0, 1.0)
-    renderer.SetBackground(0, 0, 0)
+    renderer.SetBackground(0.3, 0.3, 0.3)
 
     # --------------- setup visualization -----------------------
     grassImage, _ = renderVolume(renderer, dataset, 'grass', resampledOrigin, grassPointsDims, grassCellSpacing)
