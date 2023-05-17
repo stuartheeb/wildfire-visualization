@@ -9,7 +9,7 @@ from callbacks import vtkSliderCallback, vtkButtonCallback, vtkTransferFunctionB
 from render import renderVolume, renderStreamline, renderSurface
 import gui
 
-from colormap import SV_vorticity
+from colormap import vorticityColormap, vorticityOpacity
 
 from vtkEasyTransfer import vtkEasyTransfer
 
@@ -63,7 +63,8 @@ def main(datadir, num_frames):
 
     # --------------- transfer function --------------------
     easyTransfer = vtkEasyTransfer()
-    easyTransfer.SetColormap(SV_vorticity, None) # Save opacity in .json too?
+    
+    easyTransfer.SetColormap(vorticityColormap, vorticityOpacity)
     easyTransfer.RefreshImage()
 
     # assign transfer function to volume properties

@@ -180,39 +180,39 @@ class vtkEasyTransfer(vtk.vtkObject):
         self.InteractorStyle.SetEasyTransfer(self)
 
     def SetColormap(self, colormap, opacitymap):
+
+
+
         self.ColorTransferFunction.RemoveAllPoints()
+        #self.ColorTransferFunction = colormap
         self.OpacityTransferFunction.RemoveAllPoints()
+        #self.OpacityTransferFunction = opacitymap
         self.ColorData = []
         self.OpacityData = []
-        
-        opacitymap = [[0.284942, 0], [0.395686, 0], [3.18132, 0.1525]] # Constant for now since it's not in .json
-        # Min/max value should preferrable be the same for both colormap and opacitymap
-        self.minValue = opacitymap[0][0]
-        self.maxValue = opacitymap[2][0]
 
-        color_counter = 0
-        opacity_counter = 0
-        
+        color_min, color_max = colormap.GetRange()
+        op_min, op_max = opacitymap.GetRange()
+
+        self.minValue = min(color_min, op_min)
+        self.maxValue = max(color_max, op_max)
+
         for i in range(self.numPoints):
             t = i / (self.numPoints - 1)
             x = self.minValue + t * (self.maxValue - self.minValue)
 
-            xrgb = colormap[0]["RGBPoints"][color_counter*4:(color_counter+1)*4]
-            if((color_counter+1)*4 < len(colormap[0]["RGBPoints"])):
-                next_xrgb = colormap[0]["RGBPoints"][(color_counter+1)*4:((color_counter+1)+1)*4]
-                if(x >= next_xrgb[0]):
-                    xrgb = next_xrgb
-                    color_counter += 1
-            
-            if(opacity_counter+1 < len(opacitymap)):
-                next_x = opacitymap[opacity_counter+1][0]
-                if(x >= next_x):
-                    opacity_counter += 1
-            
-            self.ColorData.append([x, xrgb[1], xrgb[2], xrgb[3]])
-            self.OpacityData.append([x, opacitymap[opacity_counter][0]])
-            self.ColorTransferFunction.AddRGBPoint(x, xrgb[1], xrgb[2], xrgb[3])
-            self.OpacityTransferFunction.AddPoint(x, t)
+            if(x < color_min or x > color_max):
+                rgb = [0, 0, 0]
+            else:
+                rgb = colormap.GetColor(x)
+            if(x < op_min or x > op_max):
+                op = 0
+            else:
+                op = opacitymap.GetValue(x)
+
+            self.ColorData.append([x, rgb[0], rgb[1], rgb[2]])
+            self.OpacityData.append([x, op])
+            self.ColorTransferFunction.AddRGBPoint(x, rgb[0], rgb[1], rgb[2])
+            self.OpacityTransferFunction.AddPoint(x, op)
 
         self.RefreshImage()
 
