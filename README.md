@@ -1,6 +1,15 @@
 # wildfire-simulation
 Project for the course Scientific Visualization at ETH in spring 2023.
 
+## Results
+### backcurve40
+<video src="results/mountain_backcurve40_pureFire.mp4" controls="controls" style="max-width: 33%;">
+</video>
+<video src="results/mountain_backcurve40_stream.mp4" controls="controls" style="max-width: 33%;">
+</video>
+<video src="results/mountain_backcurve40_vort.mp4" controls="controls" style="max-width: 33%;">
+</video>
+
 ## Disclaimer
 
 If you are having trouble with dependencies, try using the provided `conda.yml` file.
