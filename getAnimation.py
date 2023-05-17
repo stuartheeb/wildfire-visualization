@@ -25,7 +25,7 @@ datasetDir = "dataset/mountain_backcurve40"
 # datasetDir = "dataset/mountain_headcurve320"
 #datasetDir = "dataset/test"
 # TODO: modify job suffix
-jobSuffix = "_isosurface"     # _pureFire | _stream | _vort | _isosurface
+jobSuffix = "_divergence"     # _pureFire | _stream | _vort | _isosurface | _divergence
 addFrameIextFlag = True     # for adding frame index
 skipExistedFlag = True     # for skipping existed files
 
@@ -243,6 +243,27 @@ def mainRender(grid_file_path, img_name):
     contourFilter.SetInputData(thetaImage)
     contourFilter.SetValue(0, 310)
 
+    ### =================  divergence  =================
+    cellDerivativeDivergence = vtk.vtkCellDerivatives()
+    cellDerivativeDivergence.SetInputConnection(calcCompose.GetOutputPort())
+    cellDerivativeDivergence.SetInputArrayToProcess(0, 0, 0, vtk.VTK_SCALAR_MODE_USE_POINT_DATA, "wind_velocity")
+    cellDerivativeDivergence.SetVectorModeToComputeGradient()
+    cellDerivativeDivergence.Update()
+
+    pointDerivativeDivergence = vtk.vtkCellDataToPointData()
+    pointDerivativeDivergence.SetInputConnection(cellDerivativeDivergence.GetOutputPort())
+    pointDerivativeDivergence.SetInputArrayToProcess(0, 0, 0, vtk.VTK_SCALAR_MODE_USE_CELL_DATA, "VectorGradient")
+    pointDerivativeDivergence.Update()
+
+    divergenceDerivativeImage = pointDerivativeDivergence.GetOutput()
+    divergenceDerivativeNP = vtk_to_numpy(divergenceDerivativeImage.GetPointData().GetArray("VectorGradient"))
+    divergenceNP = divergenceDerivativeNP[:,0] + divergenceDerivativeNP[:,4] + divergenceDerivativeNP[:,8]
+    divergenceVTKArray = numpy_to_vtk(divergenceNP)
+
+    divergenceVTKArray.SetName("divergence")
+    divergenceImage = vtkArray2vtkImageData(divergenceVTKArray, resampledOrigin, resampledPointsDims, resampledCellSpacing)
+    #print(divergenceImage.GetScalarRange())
+    
     ### =================  mapper  =================
     ### one mapper for each volume
     thetaVolumeMapper = vtk.vtkSmartVolumeMapper()
@@ -277,6 +298,10 @@ def mainRender(grid_file_path, img_name):
     contourMapper.SetLookupTable(colormap.thetaIsoLookupTable)
     contourMapper.Update()
 
+    divergenceMapper = vtk.vtkSmartVolumeMapper()
+    divergenceMapper.SetInputData(divergenceImage)
+    divergenceMapper.Update()
+
     ### =================  actor  =================
     ### one actor for each volume
     thetaVolumeActor = vtk.vtkVolume()
@@ -310,6 +335,10 @@ def mainRender(grid_file_path, img_name):
     contourActor.SetMapper(contourMapper)
     #contourActor.GetProperty().SetOpacity(0.5)
 
+    divergenceActor = vtk.vtkVolume()
+    divergenceActor.SetMapper(divergenceMapper)
+    divergenceActor.SetProperty(colormap.divergenceVolumeProperty)
+
     ### =================  legend  =================
     thetaLegend = vtk.vtkScalarBarActor()
     thetaLegend.SetLookupTable(colormap.thetaColormap)
@@ -338,6 +367,14 @@ def mainRender(grid_file_path, img_name):
     vortMagLegend.SetWidth(0.03)
     vortMagLegend.SetHeight(0.3)
 
+    divergenceLegend = vtk.vtkScalarBarActor()
+    divergenceLegend.SetLookupTable(colormap.divergenceColormap)
+    divergenceLegend.SetNumberOfLabels(3)
+    divergenceLegend.SetTitle("Divergence")
+    divergenceLegend.SetVerticalTitleSeparation(6)
+    divergenceLegend.GetPositionCoordinate().SetValue(0.95, 0.1)
+    divergenceLegend.SetWidth(0.03)
+    divergenceLegend.SetHeight(0.3)
 
     ### =================  renderer  =================
     ### reversely ordered in occulusion relationship
@@ -346,7 +383,9 @@ def mainRender(grid_file_path, img_name):
     renderer.AddActor(soilSurfaceActor)
     renderer.AddActor(thetaVolumeActor)
     renderer.AddActor(thetaLegend)
-    renderer.AddActor(vaporVolumeActor)
+    if(jobSuffix != "_divergence"):
+        renderer.AddActor(vaporVolumeActor)
+
     if(jobSuffix == "_stream"):
         renderer.AddActor(streamlinesActor)
         renderer.AddActor(windMagLegend)
@@ -355,6 +394,9 @@ def mainRender(grid_file_path, img_name):
         renderer.AddActor(vortVolumeActor)
     elif(jobSuffix == "_isosurface"):
         renderer.AddActor(contourActor)
+    elif(jobSuffix == "_divergence"):
+        renderer.AddActor(divergenceLegend)
+        renderer.AddActor(divergenceActor)
     renderer.ResetCamera()
 
     ### set default camera

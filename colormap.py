@@ -145,10 +145,30 @@ for i in range(numColors):
     thetaIsoLookupTable.SetTableValue(i, r, g, b, a) 
 thetaIsoLookupTable.Build()
 
+### =================  divergence  =================
+divergenceColormap = vtk.vtkColorTransferFunction()
+divergenceColormap.SetColorSpaceToDiverging()
+
+divergenceColormap.AddRGBPoint(-0.7, 0.0, 0.0, 1.0)  # Blue at the low end
+divergenceColormap.AddRGBPoint(0.0, 1.0, 1.0, 1.0)  # White in the middle
+divergenceColormap.AddRGBPoint(0.7, 1.0, 0.0, 0.0)
+
+divergenceOpacity = vtk.vtkPiecewiseFunction()
+divergenceOpacity.AddPoint(-1.0,0.15)
+divergenceOpacity.AddPoint(0.0,0.0)
+divergenceOpacity.AddPoint(1.0,0.15)
+
+divergenceVolumeProperty = vtk.vtkVolumeProperty()
+divergenceVolumeProperty.SetColor(divergenceColormap)
+divergenceVolumeProperty.SetScalarOpacity(divergenceOpacity)
+divergenceVolumeProperty.SetInterpolationTypeToLinear()
+
+
 properties = {
     'grass': grassVolumeProperty,
     'theta': thetaVolumeProperty,
     'vapor': vaporVolumeProperty,
     'vorticity': vorticityVolumeProperty,
     'soil': soilLookupTable,
+    'divergence': divergenceVolumeProperty,
 }
