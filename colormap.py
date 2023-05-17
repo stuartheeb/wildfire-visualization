@@ -120,7 +120,7 @@ for i in range(len(SV_vorticity[0]["RGBPoints"]) // 4):
     xrgb = SV_vorticity[0]["RGBPoints"][i*4:(i+1)*4]
     vorticityColormap.AddRGBPoint(xrgb[0], xrgb[1], xrgb[2], xrgb[3])
 vorticityOpacity = vtk.vtkPiecewiseFunction()
-vorticityOpacity.AddPoint(0.0, 0)
+vorticityOpacity.AddPoint(0.284942, 0)
 vorticityOpacity.AddPoint(0.395686, 0)
 vorticityOpacity.AddPoint(3.18132, 0.1525)
 
