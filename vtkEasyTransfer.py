@@ -179,6 +179,43 @@ class vtkEasyTransfer(vtk.vtkObject):
         self.InteractorStyle = vtkEasyTransferInteractorStyle()
         self.InteractorStyle.SetEasyTransfer(self)
 
+    def SetColormap(self, colormap, opacitymap):
+        self.ColorTransferFunction.RemoveAllPoints()
+        self.OpacityTransferFunction.RemoveAllPoints()
+        self.ColorData = []
+        self.OpacityData = []
+        
+        opacitymap = [[0.284942, 0], [0.395686, 0], [3.18132, 0.1525]] # Constant for now since it's not in .json
+        # Min/max value should preferrable be the same for both colormap and opacitymap
+        self.minValue = opacitymap[0][0]
+        self.maxValue = opacitymap[2][0]
+
+        color_counter = 0
+        opacity_counter = 0
+        
+        for i in range(self.numPoints):
+            t = i / (self.numPoints - 1)
+            x = self.minValue + t * (self.maxValue - self.minValue)
+
+            xrgb = colormap[0]["RGBPoints"][color_counter*4:(color_counter+1)*4]
+            if((color_counter+1)*4 < len(colormap[0]["RGBPoints"])):
+                next_xrgb = colormap[0]["RGBPoints"][(color_counter+1)*4:((color_counter+1)+1)*4]
+                if(x >= next_xrgb[0]):
+                    xrgb = next_xrgb
+                    color_counter += 1
+            
+            if(opacity_counter+1 < len(opacitymap)):
+                next_x = opacitymap[opacity_counter+1][0]
+                if(x >= next_x):
+                    opacity_counter += 1
+            
+            self.ColorData.append([x, xrgb[1], xrgb[2], xrgb[3]])
+            self.OpacityData.append([x, opacitymap[opacity_counter][0]])
+            self.ColorTransferFunction.AddRGBPoint(x, xrgb[1], xrgb[2], xrgb[3])
+            self.OpacityTransferFunction.AddPoint(x, t)
+
+        self.RefreshImage()
+
     def SetColormapHeat(self):
         self.ColorTransferFunction.RemoveAllPoints()
         self.OpacityTransferFunction.RemoveAllPoints()
