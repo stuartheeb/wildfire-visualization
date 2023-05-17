@@ -179,6 +179,38 @@ class vtkEasyTransfer(vtk.vtkObject):
         self.InteractorStyle = vtkEasyTransferInteractorStyle()
         self.InteractorStyle.SetEasyTransfer(self)
 
+    def SetColormap(self, colormap, opacitymap):
+        self.ColorTransferFunction.RemoveAllPoints()
+        self.OpacityTransferFunction.RemoveAllPoints()
+        self.ColorData = []
+        self.OpacityData = []
+
+        color_min, color_max = colormap.GetRange()
+        op_min, op_max = opacitymap.GetRange()
+
+        self.minValue = min(color_min, op_min)
+        self.maxValue = max(color_max, op_max)
+
+        for i in range(self.numPoints):
+            t = i / (self.numPoints - 1)
+            x = self.minValue + t * (self.maxValue - self.minValue)
+
+            if(x < color_min or x > color_max):
+                rgb = [0, 0, 0]
+            else:
+                rgb = colormap.GetColor(x)
+            if(x < op_min or x > op_max):
+                op = 0
+            else:
+                op = opacitymap.GetValue(x)
+
+            self.ColorData.append([x, rgb[0], rgb[1], rgb[2]])
+            self.OpacityData.append([x, op])
+            self.ColorTransferFunction.AddRGBPoint(x, rgb[0], rgb[1], rgb[2])
+            self.OpacityTransferFunction.AddPoint(x, op)
+
+        self.RefreshImage()
+
     def SetColormapHeat(self):
         self.ColorTransferFunction.RemoveAllPoints()
         self.OpacityTransferFunction.RemoveAllPoints()
