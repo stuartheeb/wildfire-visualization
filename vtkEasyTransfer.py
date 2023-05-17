@@ -180,13 +180,8 @@ class vtkEasyTransfer(vtk.vtkObject):
         self.InteractorStyle.SetEasyTransfer(self)
 
     def SetColormap(self, colormap, opacitymap):
-
-
-
         self.ColorTransferFunction.RemoveAllPoints()
-        #self.ColorTransferFunction = colormap
         self.OpacityTransferFunction.RemoveAllPoints()
-        #self.OpacityTransferFunction = opacitymap
         self.ColorData = []
         self.OpacityData = []
 
