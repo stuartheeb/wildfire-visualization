@@ -25,7 +25,7 @@ datasetDir = "dataset/mountain_backcurve40"
 # datasetDir = "dataset/mountain_headcurve320"
 #datasetDir = "dataset/test"
 # TODO: modify job suffix
-jobSuffix = "_divergence"     # _pureFire | _stream | _vort | _isosurface | _divergence
+jobSuffix = "_isosurface"     # _pureFire | _stream | _vort | _isosurface | _divergence
 addFrameIextFlag = True     # for adding frame index
 skipExistedFlag = True     # for skipping existed files
 
@@ -231,17 +231,9 @@ def mainRender(grid_file_path, img_name):
                                       resampledPointsDims, resampledCellSpacing)
     
     ### =================  isosurface  =================
-    #do binary thresholding on thetaImage
-    '''thresholdFilter = vtk.vtkImageThreshold()
-    thresholdFilter.SetInputData(thetaImage)
-    thresholdFilter.ThresholdByUpper(300)
-    thresholdFilter.SetInValue(1.0)
-    thresholdFilter.SetOutValue(0.0)'''
-
-    #create isosurface/countour filter
     contourFilter = vtk.vtkContourFilter()
     contourFilter.SetInputData(thetaImage)
-    contourFilter.SetValue(0, 310)
+    contourFilter.SetValue(0, 348)
 
     ### =================  divergence  =================
     cellDerivativeDivergence = vtk.vtkCellDerivatives()
@@ -333,7 +325,6 @@ def mainRender(grid_file_path, img_name):
 
     contourActor = vtk.vtkActor()
     contourActor.SetMapper(contourMapper)
-    #contourActor.GetProperty().SetOpacity(0.5)
 
     divergenceActor = vtk.vtkVolume()
     divergenceActor.SetMapper(divergenceMapper)
@@ -383,7 +374,7 @@ def mainRender(grid_file_path, img_name):
     renderer.AddActor(soilSurfaceActor)
     renderer.AddActor(thetaVolumeActor)
     renderer.AddActor(thetaLegend)
-    if(jobSuffix != "_divergence"):
+    if(jobSuffix != "_divergence" and jobSuffix != "_isosurface"):
         renderer.AddActor(vaporVolumeActor)
 
     if(jobSuffix == "_stream"):
