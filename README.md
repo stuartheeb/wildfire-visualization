@@ -29,7 +29,7 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 - [X] Data preprocessing (in vtk).
 - [X] GUI using preprocessed files.
 - [X] (**5 points**) Transfer function editing.
-- [ ] GUI refinements (TODO: Buttons to go back and forth 1 frame at a time)
+- [X] GUI refinements
 - [ ] GUI demo video.
 - [ ] Analyzing factors contribute to VLS behavior.
 - [ ] Final presentation slides.
