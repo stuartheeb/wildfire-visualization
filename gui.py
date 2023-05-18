@@ -74,7 +74,7 @@ def setupTimeSlider(sliderWidget, num_frames, renderWindowInteractor):
 def setup(renderer, buttons, sliderWidget, num_frames, renderWindowInteractor):
     setupLegends(renderer)
     setupTimeSlider(sliderWidget, num_frames, renderWindowInteractor)
-    location = 0.8
+    location = 0.6
     for name, button in buttons.items():
         setupButton(name, location, renderer, button, renderWindowInteractor)
         location += 0.1

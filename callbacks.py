@@ -66,3 +66,17 @@ class vtkTransferFunctionButtonCallback(object):
 
             self.renderWindowInteractor.SetInteractorStyle(self.interactor)
             self.renderWindowInteractor.SetInteractorStyle(self.transferInteractor.GetInteractorStyle())
+
+class vtkStepButtonCallback(object):
+    def __init__(self, sliderWidget, delta, minVal, maxVal, sliderCallback):
+        self.sliderWidget = sliderWidget
+        self.delta = delta
+        self.minVal = minVal
+        self.maxVal = maxVal
+        self.sliderCallback = sliderCallback
+
+    def __call__(self, buttonWidget, eventId):
+        val = self.sliderWidget.GetRepresentation().GetValue()
+        new_val = max(self.minVal, min(val + self.delta, self.maxVal))
+        self.sliderWidget.GetRepresentation().SetValue(new_val)
+        self.sliderCallback.__call__(self.sliderWidget, eventId)

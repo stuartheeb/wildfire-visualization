@@ -5,7 +5,7 @@ import numpy as np
 import vtk
 from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
 
-from callbacks import vtkSliderCallback, vtkButtonCallback, vtkTransferFunctionButtonCallback
+from callbacks import vtkSliderCallback, vtkButtonCallback, vtkTransferFunctionButtonCallback, vtkStepButtonCallback
 from render import renderVolume, renderStreamline, renderSurface
 import gui
 
@@ -83,8 +83,11 @@ def main(datadir, num_frames):
     vorticityButton = vtk.vtkButtonWidget()
     editTransferFunctionToggle = vtk.vtkButtonWidget()
     sliderWidget = vtk.vtkSliderWidget()
+    plusFrameButton = vtk.vtkButtonWidget()
+    minusFrameButton = vtk.vtkButtonWidget()
+    
     gui.setup(renderer, 
-              {'transfer': editTransferFunctionToggle, 'vorticity': vorticityButton, 'streamline': streamlineButton}, 
+              {'minusFrame': minusFrameButton, 'plusFrame': plusFrameButton, 'transfer': editTransferFunctionToggle, 'vorticity': vorticityButton, 'streamline': streamlineButton}, 
               sliderWidget, num_frames, renderWindowInteractor)
 
     # ------------------- callbacks --------------------
@@ -108,6 +111,12 @@ def main(datadir, num_frames):
                                                   'vorticity': vortImage})
     sliderWidget.AddObserver('InteractionEvent', callbackSlider)
     sliderWidget.EnabledOn()
+
+    plusFrameBCallback = vtkStepButtonCallback(sliderWidget, 1, 1, num_frames, callbackSlider);
+    plusFrameButton.AddObserver("StateChangedEvent", plusFrameBCallback)
+
+    minusFrameCallback = vtkStepButtonCallback(sliderWidget, -1, 1, num_frames, callbackSlider);
+    minusFrameButton.AddObserver("StateChangedEvent", minusFrameCallback)
 
     # ------------- rendering loop --------------
     renderWindow.Render()
