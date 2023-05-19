@@ -149,9 +149,9 @@ thetaIsoLookupTable.Build()
 divergenceColormap = vtk.vtkColorTransferFunction()
 divergenceColormap.SetColorSpaceToDiverging()
 
-divergenceColormap.AddRGBPoint(-0.7, 0.0, 0.0, 1.0)  # Blue at the low end
+divergenceColormap.AddRGBPoint(-1.0, 0.0, 0.0, 1.0)  # Blue at the low end
 divergenceColormap.AddRGBPoint(0.0, 1.0, 1.0, 1.0)  # White in the middle
-divergenceColormap.AddRGBPoint(0.7, 1.0, 0.0, 0.0)
+divergenceColormap.AddRGBPoint(1.0, 1.0, 0.0, 0.0)
 
 divergenceOpacity = vtk.vtkPiecewiseFunction()
 divergenceOpacity.AddPoint(-1.0,0.15)
