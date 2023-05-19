@@ -255,6 +255,8 @@ def mainRender(grid_file_path, img_name):
     divergenceVTKArray.SetName("divergence")
     divergenceImage = vtkArray2vtkImageData(divergenceVTKArray, resampledOrigin, resampledPointsDims, resampledCellSpacing)
     #print(divergenceImage.GetScalarRange())
+    #print("mean: ",np.mean(divergenceNP))
+    #print("var: ",np.var(divergenceNP))
     
     ### =================  mapper  =================
     ### one mapper for each volume
