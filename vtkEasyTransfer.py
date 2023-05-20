@@ -1,5 +1,6 @@
-import vtk
+# Taken mostly from the Programming Exercise 3 of the course
 
+import vtk
 
 class vtkEasyTransferInteractorStyle(vtk.vtkInteractorStyleTrackballCamera):
     def __init__(self):
@@ -148,9 +149,9 @@ class vtkEasyTransfer(vtk.vtkObject):
     def __init__(self):
         self.CanvasWidth = 256
         self.CanvasHeight = 100
-        self.numPoints = 256
+        self.numPoints = 64#256
         self.minValue = 0
-        self.maxValue = 255
+        self.maxValue = 256#128
 
         self.ColorTransferFunction = vtk.vtkColorTransferFunction()
         self.OpacityTransferFunction = vtk.vtkPiecewiseFunction()
