@@ -17,15 +17,15 @@ import time
 from PIL import Image, ImageDraw, ImageFont
 
 # TODO: modify dataset directory
-datasetDir = "dataset/mountain_backcurve40"
+# datasetDir = "dataset/mountain_backcurve40"
 # datasetDir = "dataset/mountain_backcurve80"
 # datasetDir = "dataset/mountain_backcurve320"
 # datasetDir = "dataset/mountain_headcurve40"
-# datasetDir = "dataset/mountain_headcurve80"
+datasetDir = "dataset/mountain_headcurve80"
 # datasetDir = "dataset/mountain_headcurve320"
 #datasetDir = "dataset/test"
 # TODO: modify job suffix
-jobSuffix = "_isosurface"     # _pureFire | _stream | _vort | _isosurface | _divergence
+jobSuffix = "_divergence"     # _pureFire | _stream | _vort | _isosurface | _divergence
 addFrameIextFlag = True     # for adding frame index
 skipExistedFlag = True     # for skipping existed files
 
@@ -250,7 +250,9 @@ def mainRender(grid_file_path, img_name):
     divergenceDerivativeImage = pointDerivativeDivergence.GetOutput()
     divergenceDerivativeNP = vtk_to_numpy(divergenceDerivativeImage.GetPointData().GetArray("VectorGradient"))
     divergenceNP = divergenceDerivativeNP[:,0] + divergenceDerivativeNP[:,4] + divergenceDerivativeNP[:,8]
-    divergenceVTKArray = numpy_to_vtk(divergenceNP)
+    divergenceNP_3d = divergenceNP.reshape(resampledPointsDims[::-1])
+    divergenceNP_3d[-5:, :, :] = int(0)    ### indexing in z, y, x order
+    divergenceVTKArray = numpy_to_vtk(divergenceNP_3d.reshape(-1))
 
     divergenceVTKArray.SetName("divergence")
     divergenceImage = vtkArray2vtkImageData(divergenceVTKArray, resampledOrigin, resampledPointsDims, resampledCellSpacing)
