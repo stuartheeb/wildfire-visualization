@@ -1,23 +1,20 @@
 '''
-5.14
+5.17
 following test_vorticity.py
 for LIC
 '''
 import os
 import vtk
 import numpy as np
-from vtkmodules.vtkInteractionStyle import vtkInteractorStyleTrackballCamera
-import colormap
 from vtk.util.numpy_support import vtk_to_numpy, numpy_to_vtk
 
 
 def main():
     print("[WildFireB]")
-    # lic("vortices", "test_licpy.png")
 
     ### =================  IO  =================
-    grid_file_name = "../dataset/mountain_backcurve320/output.40000.vts"
-    # grid_file_name = "../dataset\\mountain_backcurve320\\output.40000.vts"
+    # grid_file_name = "dataset/mountain_backcurve40/output.50000.vts"
+    grid_file_name = "dataset/mountain_backcurve320/output.50000.vts"
     grid_datasetReader = vtk.vtkXMLStructuredGridReader()
     grid_datasetReader.SetFileName(grid_file_name)
     grid_datasetReader.Update()
@@ -81,11 +78,15 @@ def main():
     yData = np.expand_dims(yData, -1)
 
     vectorField = np.concatenate([xData, yData], -1)
+    print(vectorField.shape)
+    index = grid_file_name.split('/')[-1].split(".")[1]
+    npy_file_name = ""
     if "backcurve40" in grid_file_name:
-        np.save("backcurve40.npy", vectorField)
+        npy_file_name = "slice_backcurve40_{}.npy".format(index)
     elif "backcurve320" in grid_file_name:
-        np.save("backcurve320.npy", vectorField)
-    print("> saved: npy")
+        npy_file_name = "slice_backcurve320_{}.npy".format(index)
+    np.save(npy_file_name, vectorField)
+    print("> saved: {}".format(npy_file_name))
     
 if __name__ == "__main__":
     main()

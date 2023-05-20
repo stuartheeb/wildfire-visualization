@@ -164,8 +164,10 @@ def runLIC(npArray: np.ndarray, imgName: str, args: argparse.ArgumentError):
     assert args.convType in ["gauss", "asymf"]
     assert args.noiseType in ["white", "butter_white"]
     resTorch = lic(vx, vy, args.kernelLength, args.convType, args.noiseType, args.wn, return_magnitude=True)
-    
-    resNP = resTorch.numpy().transpose()
+
+    resNP = resTorch.numpy()
+    if resNP.shape[0] < resNP.shape[1]:
+        resNP = resNP.transpose()
     save_grey(imgName, resNP)
 
 def save_grey(name, img):
@@ -183,14 +185,18 @@ def save_grey(name, img):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--npy_path', type=str, default='./backcurve320.npy', help="Path to the NPY file")
+    parser.add_argument('--npy_path', type=str, default='./slice_backcurve40_8000.npy', help="Path to the NPY file")
     parser.add_argument('--convType', type=str, default='gauss', help="gauss | asymf: asympotic forward")
     parser.add_argument('--noiseType', type=str, default='white', help="white | butter_white: asympotic forward")
     parser.add_argument('--kernelLength', type=float, default=100.0, help="")
     parser.add_argument('--wn', type=float, default=0.75, help="[0.0, 1.0], for butter worth band width")
     args = parser.parse_args()
+    print(args)
     
     vf_np = np.load(args.npy_path)
     convType = args.convType
     noiseType= args.noiseType
-    runLIC(vf_np, "{}.png".format("LIC_"+args.convType+"_"+args.noiseType), args)
+    file_name = args.npy_path.split('/')[-1].split('.npy')[0]
+    img_name = "LIC_{}_{}_{}_{}.png".format(file_name, args.convType, args.kernelLength, args.noiseType)
+    runLIC(vf_np, img_name, args)
+    print("> saved to: {}".format(img_name))
