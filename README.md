@@ -11,6 +11,7 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 - [X] [Yitong] Surface rendering on: soil.
 - [X] (**5 points**) [Yitong] Compute & visualize velocity field and its streamline. 
 - [X] (**5/3 points**) [Yitong] Compute & visualize vorticity. 
+- [ ] ~~(**5/3 points**) Compute & visualize lambda2.~~
 - [X] (**5/3 points**) [Johannes] Compute & visualize divergence.
 - [X] (**5 points**) [Johannes] Isosurface.
 - [X] [Yitong] Animation codes.
