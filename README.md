@@ -62,4 +62,4 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 
 ### 5.16 Transfer function editing
 - Isosurfaces for the fire-air boundary
-- Transfer function editing for vorticity, load default colormaps.
+- Transfer function editing for vorticity, load default colormaps. 
