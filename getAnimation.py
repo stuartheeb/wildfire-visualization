@@ -372,7 +372,7 @@ def mainRender(grid_file_path, img_name):
     divergenceLegend.SetHeight(0.3)
 
     ### =================  renderer  =================
-    ### reversely ordered in occulusion relationship
+    ### Sol1: reversely ordered in occulusion relationship
     renderer = vtk.vtkRenderer()
     renderer.AddActor(grassVolumeActor)
     renderer.AddActor(soilSurfaceActor)
@@ -393,6 +393,35 @@ def mainRender(grid_file_path, img_name):
         renderer.AddActor(divergenceLegend)
         renderer.AddActor(divergenceActor)
     renderer.ResetCamera()
+
+    # ### Sol2: vtkMultiVolume
+    # multiVolActor = vtk.vtkMultiVolume()
+    # multiVolMapper = vtk.vtkGPUVolumeRayCastMapper()
+    # multiVolActor.SetMapper(multiVolMapper)
+    # multiVolMapper.SetUseJittering(0)
+
+    # dataList = [grassImage, thetaImage, vaporImage]
+    # volumeList = [grassVolumeActor, thetaVolumeActor, vaporVolumeActor]
+    # if(jobSuffix == "_vort"):
+    #     dataList.append(vortImage)
+    #     volumeList.append(vortVolumeActor)
+    # for i in reversed(range(len(dataList))):
+    #     multiVolMapper.SetInputDataObject(i, dataList[i])
+    #     multiVolActor.SetVolume(volumeList[i], i)
+    # renderer.AddActor(soilSurfaceActor)
+    # renderer.AddActor(thetaLegend)
+    # renderer.AddVolume(multiVolActor)
+    # if(jobSuffix == "_stream"):
+    #     renderer.AddActor(streamlinesActor)
+    #     renderer.AddActor(windMagLegend)
+    # elif(jobSuffix == "_isosurface"):
+    #     renderer.AddActor(contourActor)
+    # elif(jobSuffix == "_vort"):
+    #     renderer.AddActor(vortMagLegend)
+    # elif(jobSuffix == "_divergence"):
+    #     renderer.AddActor(divergenceLegend)
+    #     renderer.AddActor(divergenceActor)
+    # renderer.ResetCamera()
 
     ### set default camera
     renderer.SetBackground(82.0/255, 87.0/255, 110.0/255)
