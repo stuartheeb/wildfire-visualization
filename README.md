@@ -23,9 +23,9 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 - [X] (**5 points**) [Stuart] Transfer function editing in GUI.
 - [X] [Stuart, Yingyan] GUI refinements.
 - [X] (**Bonus, <10 points**) [Yitong] Line Integral Convolution, for VLS analysis.
-- [ ] [] GUI demo video.
-- [X] [] Analyzing factors contribute to VLS behavior.
-- [ ] Final presentation slides.
+- [X] [Yingyan] GUI demo video.
+- [X] Analyzing factors contribute to VLS behavior.
+- [X] Final presentation slides.
 - [ ] (*10 points*) Final report.
 
 
