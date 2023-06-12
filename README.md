@@ -1,6 +1,8 @@
 # wildfire-simulation
 Project for the course Scientific Visualization at ETH in spring 2023.
 
+[Report](report/report.pdf)
+
 ## Disclaimer
 
 If you are having trouble with dependencies, try using the provided `conda.yml` file.
