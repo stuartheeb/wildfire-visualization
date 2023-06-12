@@ -28,7 +28,7 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 - [X] [Yingyan] GUI demo video.
 - [X] Analyzing factors contribute to VLS behavior.
 - [X] Final presentation slides.
-- [ ] (*10 points*) Final report.
+- [X] (*10 points*) Final report.
 
 
 ## Log
