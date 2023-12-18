@@ -1,13 +1,4 @@
-# wildfire-simulation
-Project for the course Scientific Visualization at ETH in spring 2023.
-
-[Report](report/report.pdf)
-
-## Disclaimer
-
-If you are having trouble with dependencies, try using the provided `conda.yml` file.
-
-## TODO List
+# TODO List
 - [X] [Yitong] VTK code baseline.
 - [X] (**5 points**) [Yitong] Volume rendering on: fire, water vapor, grass.
 - [X] [Yitong] Surface rendering on: soil.
@@ -31,37 +22,37 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 - [X] (*10 points*) Final report.
 
 
-## Log
-### 4.30 General Code Pipeline
+# Log
+## 4.30 General Code Pipeline
 <p align="center">
     <img src="./media/0430.png" alt="" style="width:800px;" />
 </p>
 
-### 5.2 Composite Velocity Field + Visualize Streamlines
+## 5.2 Composite Velocity Field + Visualize Streamlines
 <p align="center">
     <img src="./media/0502.png" alt="" style="width:800px;" />
 </p>
 
-### 5.6 GUI Code Pipeline
+## 5.6 GUI Code Pipeline
 <p align="center">
     <img src="./media/0506_streamline.png" alt="" style="width:800px;" />
 </p>
 
-### 5.7 Visualized Vorticity
+## 5.7 Visualized Vorticity
 <p align="center">
     <img src="./media/0507.png" alt="" style="width:800px;" />
 </p>
 
-### 5.8 Add Naive Animation Codes & Fix Blank Window Bug
+## 5.8 Add Naive Animation Codes & Fix Blank Window Bug
 - Use `getAnimation.py` to get full animations
 - Fix blank window bug
 
-### 5.14 All animation videos uploaded
+## 5.14 All animation videos uploaded
 - All animation videos head/curve 40/80/320 fire/streamlines/vorticity uploaded
 
-### 5.15 Fully automatic preprocessing
+## 5.15 Fully automatic preprocessing
 - Fully automatic preprocessing which allows the GUI to run more smoothly
 
-### 5.16 Transfer function editing
+## 5.16 Transfer function editing
 - Isosurfaces for the fire-air boundary
 - Transfer function editing for vorticity, load default colormaps.
