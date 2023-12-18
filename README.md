@@ -6,7 +6,7 @@ The report (PDF) can be found [here](/report/report.pdf). The final presentation
 
 ## Disclaimer
 
-If you are having trouble with dependencies, try using the provided `conda.yml` file in the [code directory](/code/). The datasets must be downloaded from the  and placed in the correct folder.
+If you are having trouble with dependencies, try using the provided `conda.yml` file in the [code directory](/code/). The datasets must be downloaded from the contest website (link above) and placed in the correct folder.
 
 ## Results
 
