@@ -10,6 +10,13 @@ If you are having trouble with dependencies, try using the provided `conda.yml` 
 
 ## Results
 
-<p align="center">
-    <img src="./code/media/0507.png" alt="" style="width:800px;" />
-</p>
+### Visualizing streamlines and fire
+
+https://github.com/stuartheeb/wildfire-visualization/assets/86061430/4950426e-3ba4-4fc6-82cb-b1f2aa0d3525
+
+https://github.com/stuartheeb/wildfire-visualization/assets/86061430/1c711fd2-f8ee-4460-8c3b-b757b9e9ca59
+
+### Visualizing vorticity
+
+https://github.com/stuartheeb/wildfire-visualization/assets/86061430/1f3fa3f8-ba62-4c17-aad8-519871b33a3a
+
